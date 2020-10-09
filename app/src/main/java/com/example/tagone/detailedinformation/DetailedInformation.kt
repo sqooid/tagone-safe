@@ -23,6 +23,7 @@ class DetailedInformation : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         /**
          * Getting args from navigation
          */
