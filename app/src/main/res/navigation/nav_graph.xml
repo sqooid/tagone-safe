@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/tag_search">
+
+    <fragment
+        android:id="@+id/tag_search"
+        android:name="com.example.tagone.tagsearch.TagSearchFragment"
+        android:label="Tag Search"
+        tools:layout="@layout/fragment_tag_search" >
+        <action
+            android:id="@+id/tag_search_show_detailed"
+            app:destination="@id/detailedViewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/favourites"
+        android:name="com.example.tagone.favourites.FavouritesFragment"
+        android:label="Favourites"
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/favourites_show_detailed"
+            app:destination="@id/detailedViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailedViewFragment"
+        android:name="com.example.tagone.detailedview.DetailedViewFragment"
+        android:label="Post {postNumber}"
+        tools:layout="@layout/detailed_view_fragment" >
+        <argument
+            android:name="post"
+            app:argType="com.example.tagone.util.DisplayModel" />
+        <argument
+            android:name="postNumber"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_detailedViewFragment_to_detailedInformation"
+            app:destination="@id/detailedInformation" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailedInformation"
+        android:name="com.example.tagone.detailedinformation.DetailedInformation"
+        android:label="Metadata" >
+        <argument
+            android:name="post"
+            app:argType="com.example.tagone.util.DisplayModel" />
+    </fragment>
+
+</navigation>
