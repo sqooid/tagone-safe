@@ -9,17 +9,21 @@
         android:id="@+id/tag_search"
         android:name="com.example.tagone.tagsearch.TagSearchFragment"
         android:label="Tag Search"
-        tools:layout="@layout/fragment_tag_search" >
+        tools:layout="@layout/tag_search_fragment" >
         <action
             android:id="@+id/tag_search_show_detailed"
             app:destination="@id/detailedViewFragment" />
+        <argument
+            android:name="linkedTag"
+            android:defaultValue=""
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/favourites"
         android:name="com.example.tagone.favourites.FavouritesFragment"
         android:label="Favourites"
-        tools:layout="@layout/fragment_favourites" >
+        tools:layout="@layout/favourites_fragment" >
         <action
             android:id="@+id/favourites_show_detailed"
             app:destination="@id/detailedViewFragment" />
@@ -36,16 +40,8 @@
             android:name="postNumber"
             app:argType="integer" />
         <action
-            android:id="@+id/action_detailedViewFragment_to_detailedInformation"
-            app:destination="@id/detailedInformation" />
-    </fragment>
-    <fragment
-        android:id="@+id/detailedInformation"
-        android:name="com.example.tagone.detailedinformation.DetailedInformation"
-        android:label="Metadata" >
-        <argument
-            android:name="post"
-            app:argType="com.example.tagone.util.DisplayModel" />
+            android:id="@+id/followTag"
+            app:destination="@id/tag_search" />
     </fragment>
 
 </navigation>

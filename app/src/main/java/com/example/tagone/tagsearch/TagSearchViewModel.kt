@@ -20,6 +20,10 @@ class TagSearchViewModel : ViewModel() {
     val postSuccess: LiveData<Boolean>
         get() = _postSuccess
 
+    private val _searchParameters = MutableLiveData<String>()
+    val searchParameters: LiveData<String>
+        get() = _searchParameters
+
     private var currentTags = ""
     private val postsPerPage = 50
     private var pageNumber = 1
@@ -29,6 +33,7 @@ class TagSearchViewModel : ViewModel() {
      */
     fun doInitialSearchWithTags(tags: String) {
         _posts.value = mutableListOf()
+        _searchParameters.value = tags
         currentTags = tags
         pageNumber = 0
         retrievePostsFromNetwork(tags, postsPerPage, pageNumber)

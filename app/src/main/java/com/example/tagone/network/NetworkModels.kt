@@ -14,7 +14,7 @@ data class DanbooruPostNet(
     val source: String?,
     val rating: String?,
     @Json(name = "created_at") val createdAt: String?,
-    @Json(name = "uploader_id") val uploaderId: String,
+    @Json(name = "uploader_id") val uploaderId: String?,
     @Json(name = "fav_count") val favCount: Int?,
     @Json(name = "parent_id") val parentId: Int?,
     @Json(name = "pool_string") val poolString: String?,
@@ -25,8 +25,8 @@ data class DanbooruPostNet(
     @Json(name = "tag_string_artist") val tagStringArtist: String,
     @Json(name = "tag_string_meta") val tagStringMeta: String,
     @Json(name = "file_url") val fileUrl: String?,
-//    @Json(name = "large_file_url") val largeFileUrl: String?,
-//    @Json(name = "preview_file_url") val previewFileUrl: String?
+    @Json(name = "preview_file_url") val previewFileUrl: String?
+//    @Json(name = "large_file_url") val largeFileUrl: String,
 //    val md5: String,
 //    @Json(name = "last_comment_bumped_at") val lastCommentBumpedAt: String,
 //    @Json(name = "image_width") val imageWidth: Int,
@@ -70,13 +70,13 @@ fun List<DanbooruPostNet>.toDisplayModel(): List<DisplayModel> {
             id = it.id,
             createdAt = it.createdAt,
             source = it.source,
-            isFavorited = it.isFavorited,
             tagStringGeneral = it.tagStringGeneral,
             tagStringArtist = it.tagStringArtist,
             tagStringMeta = it.tagStringMeta,
             tagStringCharacter = it.tagStringCharacter,
             tagStringCopyright = it.tagStringCopyright,
             fileUrl = it.fileUrl,
+            previewFileUrl = it.previewFileUrl
         )
     }
 }

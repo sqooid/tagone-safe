@@ -5,25 +5,64 @@
     tools:context=".detailedview.DetailedViewFragment">
 
     <data>
+
         <variable
             name="post"
             type="com.example.tagone.util.DisplayModel" />
+
         <variable
             name="viewModel"
             type="com.example.tagone.detailedview.DetailedViewViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top">
+        android:layout_height="wrap_content">
 
-        <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/detailed_image_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:loadedImage="@{post.fileUrl}"
-            tools:src="@drawable/ic_baseline_smoke_free_24"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.chrisbanes.photoview.PhotoView
+                    android:id="@+id/detailed_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    app:imageUrlWidthHeight="@{post.fileUrl}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_baseline_smoke_free_24" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/favourite_button"
+                    android:onClick="@{() -> viewModel.toggleFavourite()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_fire_white_24"
+                    app:rippleColor="@color/primaryLightColor"
+                    app:backgroundTint="@color/elevation2"
+                    app:tint="@android:color/white"
+                    app:borderWidth="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include
+                android:id="@+id/tags"
+                layout="@layout/detailed_information_fragment" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
 </layout>

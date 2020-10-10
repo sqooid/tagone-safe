@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.tagone.R
-import com.example.tagone.databinding.FragmentTagSearchBinding
+import com.example.tagone.databinding.TagSearchFragmentBinding
 
 class TagSearchFragment : Fragment() {
 
@@ -26,7 +27,7 @@ class TagSearchFragment : Fragment() {
     }
 
     private lateinit var viewModel: TagSearchViewModel
-    private lateinit var binding: FragmentTagSearchBinding
+    private lateinit var binding: TagSearchFragmentBinding
     private lateinit var windowManager: WindowManager
 
     override fun onCreateView(
@@ -35,7 +36,7 @@ class TagSearchFragment : Fragment() {
     ): View? {
 
         // Data Binding
-        binding = FragmentTagSearchBinding.inflate(inflater)
+        binding = TagSearchFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
         // Defining window manager to get width of screen to be passed to recycler view layout manager
@@ -51,14 +52,38 @@ class TagSearchFragment : Fragment() {
         // Calling function to set up recycler view
         bindRecyclerView()
 
+        /**
+         * Observers
+         */
         viewModel.postSuccess.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 Toast.makeText(activity, "No posts with those tags", Toast.LENGTH_SHORT).show()
             }
         })
+        viewModel.searchParameters.observe(viewLifecycleOwner, Observer {
+            updateToolbarTitle(it)
+        })
 
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val args = TagSearchFragmentArgs.fromBundle(requireArguments())
+        if (args.linkedTag != "") {
+            viewModel.doInitialSearchWithTags(args.linkedTag)
+        }
+    }
+
+
+    /**
+     * Helper functions
+     */
+    private fun updateToolbarTitle(text: String) {
+        val toolBar = activity?.findViewById<Toolbar>(R.id.toolbar)
+        toolBar?.title = text
+    }
+
 
     /**
      * Options menu (containing searchView) creation and configuration
@@ -81,6 +106,7 @@ class TagSearchFragment : Fragment() {
              */
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
+                    searchItem.collapseActionView()
                     if (query != null) {
                         viewModel.doInitialSearchWithTags(query)
                         Log.i("Test", "Search made")
@@ -111,6 +137,7 @@ class TagSearchFragment : Fragment() {
         }
     }
 
+
     /**
      * Function to set up recycler view with staggered grid layout
      */
@@ -131,11 +158,12 @@ class TagSearchFragment : Fragment() {
         /**
          * Instantiating adapter
          */
-        val adapter = TagSearchAdapter(width, TagSearchAdapter.OnClickListener {post, postNumber ->
+        val adapter = TagSearchAdapter(width, TagSearchAdapter.OnClickListener { post, postNumber ->
 //            val extras = FragmentNavigatorExtras(
 //                imageView to post.id.toString()
 //            )
-            this.findNavController().navigate(TagSearchFragmentDirections.tagSearchShowDetailed(post, postNumber))
+            this.findNavController()
+                .navigate(TagSearchFragmentDirections.tagSearchShowDetailed(post, postNumber))
         })
         binding.tagSearchRecyclerView.adapter = adapter
 

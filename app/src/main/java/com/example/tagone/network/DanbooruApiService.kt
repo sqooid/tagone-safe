@@ -23,7 +23,8 @@ interface DanbooruApiService {
     suspend fun getPosts(
         @Query("tags") tags: String,
         @Query("limit") limit: Int,
-        @Query("page") page: Int): List<DanbooruPostNet>
+        @Query("page") page: Int
+    ): List<DanbooruPostNet>
 }
 
 ///**
@@ -43,7 +44,7 @@ interface DanbooruApiService {
 //}
 
 object DanbooruApi {
-    val retrofitService : DanbooruApiService by lazy {
+    val retrofitService: DanbooruApiService by lazy {
         retrofit.create(DanbooruApiService::class.java)
     }
 }

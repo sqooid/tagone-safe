@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tagone.databinding.ImagePreviewBinding
 import com.example.tagone.util.DisplayModel
 
-class TagSearchAdapter(private val screenWidth: Int, private val onClickListener: OnClickListener) : ListAdapter<DisplayModel, TagSearchAdapter.TagPostViewHolder>(DiffUtilCallback) {
+class TagSearchAdapter(private val screenWidth: Int, private val onClickListener: OnClickListener) :
+    ListAdapter<DisplayModel, TagSearchAdapter.TagPostViewHolder>(DiffUtilCallback) {
 
     /**
      * Live data to notify fragment that more posts should be retrieved from network
@@ -32,7 +33,7 @@ class TagSearchAdapter(private val screenWidth: Int, private val onClickListener
             onClickListener.onClick(post, position)
         }
         holder.bind(post, position)
-        if (position == itemCount-5) {
+        if (position == itemCount - 5) {
             _postsExhausted.value = true
         }
     }
@@ -40,7 +41,8 @@ class TagSearchAdapter(private val screenWidth: Int, private val onClickListener
     /**
      * ViewHolder for posts. Width of imageView is set here, to scale image to edge of device screen
      */
-    inner class TagPostViewHolder(val binding: ImagePreviewBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TagPostViewHolder(val binding: ImagePreviewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: DisplayModel, itemNumber: Int) {
             binding.post = item

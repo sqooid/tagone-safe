@@ -22,15 +22,36 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<DisplayModel>?) {
 /**
  * Loading image from URL
  */
-@BindingAdapter("loadedImage")
-fun displayImage(imageView: ImageView, imageUrl: String?) {
+@BindingAdapter("imageUrlWidth")
+fun displayImageWidthConstraint(imageView: ImageView, imageUrl: String?) {
     imageUrl?.let {
         val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(imageView.context)
             .load(imageUri)
             .placeholder(R.drawable.ic_baseline_smoke_free_24)
             .dontAnimate()
-            .apply(RequestOptions().override(imageView.layoutParams.width,0))
+            .apply(RequestOptions().override(imageView.layoutParams.width, 0))
+            .into(imageView)
+    }
+}
+
+/**
+ * Loading image from URL
+ */
+@BindingAdapter("imageUrlWidthHeight")
+fun displayImageWidthHeightConstraint(imageView: ImageView, imageUrl: String?) {
+    imageUrl?.let {
+        val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
+        Glide.with(imageView.context)
+            .load(imageUri)
+            .placeholder(R.drawable.ic_baseline_smoke_free_24)
+            .dontAnimate()
+            .apply(
+                RequestOptions().override(
+                    imageView.layoutParams.width,
+                    imageView.layoutParams.height
+                )
+            )
             .into(imageView)
     }
 }

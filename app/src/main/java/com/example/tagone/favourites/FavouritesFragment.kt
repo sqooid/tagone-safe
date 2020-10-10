@@ -1,60 +1,89 @@
 package com.example.tagone.favourites
 
+import android.content.Context
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.tagone.R
+import com.example.tagone.databinding.FavouritesFragmentBinding
+import com.example.tagone.tagsearch.TagSearchAdapter
+import com.example.tagone.tagsearch.TagSearchFragmentDirections
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavouritesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FavouritesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var viewModel: FavouritesViewModel
+    private lateinit var binding: FavouritesFragmentBinding
+    private lateinit var windowManager: WindowManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favourites, container, false)
+        binding = FavouritesFragmentBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+
+        /**
+         * ViewModel
+         */
+        val activity = requireNotNull(this.activity)
+        viewModel =
+            ViewModelProvider(this, FavouritesViewModel.ViewModelFactory(activity.application)).get(
+                FavouritesViewModel::class.java
+            )
+        binding.viewModel = viewModel
+
+        windowManager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        bindRecyclerView()
+
+        return binding.root
     }
 
-    companion object {
+
+
+
+
+    /**
+     * Function to set up recycler view with staggered grid layout
+     */
+    private fun bindRecyclerView() {
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FavouritesFragment.
+         * Getting width of device in order to scale image to edges
          */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavouritesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        val width: Int
+        width = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            val display = windowManager.defaultDisplay
+            val size = Point()
+            display.getSize(size)
+            size.x
+        } else {
+            windowManager.currentWindowMetrics.bounds.width()
+        }
+
+        /**
+         * Instantiating adapter
+         */
+        val adapter = TagSearchAdapter(width, TagSearchAdapter.OnClickListener { post, postNumber ->
+            this.findNavController()
+                .navigate(FavouritesFragmentDirections.favouritesShowDetailed(post, postNumber))
+        })
+        binding.favouritesRecyclerView.adapter = adapter
+
+        /**
+         * Creating staggered grid layout manager
+         */
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        binding.favouritesRecyclerView.layoutManager = staggeredGridLayoutManager
     }
+
 }

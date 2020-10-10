@@ -7,21 +7,17 @@
 
         <variable
             name="viewModel"
-            type="com.example.tagone.detailedinformation.DetailedInformationViewModel" />
+            type="com.example.tagone.detailedview.DetailedViewViewModel" />
 
         <variable
             name="post"
             type="com.example.tagone.util.DisplayModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:id="@+id/linear_layout"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -110,7 +106,5 @@
                 app:showDivider="beginning|middle" />
 
         </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </layout>
