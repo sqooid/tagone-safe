@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.tagone.R
-import com.example.tagone.tagsearch.TagSearchAdapter
 
 /**
  * Updating Recycler View
  */
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<DisplayModel>?) {
-    val adapter = recyclerView.adapter as TagSearchAdapter
+    val adapter = recyclerView.adapter as PostScrollAdapter
     adapter.submitList(data)
 }
 
@@ -28,8 +27,9 @@ fun displayImageWidthConstraint(imageView: ImageView, imageUrl: String?) {
         val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(imageView.context)
             .load(imageUri)
-            .placeholder(R.drawable.ic_baseline_smoke_free_24)
-            .dontAnimate()
+            .placeholder(R.drawable.ic_baseline_image_24)
+            .thumbnail(0.2f)
+//            .dontAnimate()
             .apply(RequestOptions().override(imageView.layoutParams.width, 0))
             .into(imageView)
     }
@@ -44,8 +44,9 @@ fun displayImageWidthHeightConstraint(imageView: ImageView, imageUrl: String?) {
         val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
         Glide.with(imageView.context)
             .load(imageUri)
-            .placeholder(R.drawable.ic_baseline_smoke_free_24)
-            .dontAnimate()
+            .placeholder(R.drawable.ic_baseline_image_24)
+            .thumbnail(0.2f)
+//            .dontAnimate()
             .apply(
                 RequestOptions().override(
                     imageView.layoutParams.width,

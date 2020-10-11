@@ -1,20 +1,24 @@
 package com.example.tagone.tagsearch
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.view.WindowManager
+import androidx.lifecycle.*
+import com.example.tagone.database.getDatabase
 import com.example.tagone.network.DanbooruApi
 import com.example.tagone.network.toDisplayModel
 import com.example.tagone.util.DisplayModel
+import com.example.tagone.util.PostsRepository
 import kotlinx.coroutines.launch
 
-class TagSearchViewModel : ViewModel() {
+class TagSearchViewModel(application: Application) : ViewModel() {
 
-    private val _posts = MutableLiveData<List<DisplayModel>>()
-    val posts: LiveData<List<DisplayModel>>
-        get() = _posts
+    /**
+     * Repository
+     */
+    private val repository = PostsRepository(getDatabase(application))
+
+    val posts = repository.searchList
 
     private val _postSuccess = MutableLiveData<Boolean>()
     val postSuccess: LiveData<Boolean>
@@ -25,18 +29,24 @@ class TagSearchViewModel : ViewModel() {
         get() = _searchParameters
 
     private var currentTags = ""
-    private val postsPerPage = 50
+    private val postsPerPage = 100
     private var pageNumber = 1
+
 
     /**
      * Function that is run when user hits search button. Resets posts
      */
     fun doInitialSearchWithTags(tags: String) {
-        _posts.value = mutableListOf()
         _searchParameters.value = tags
         currentTags = tags
         pageNumber = 0
-        retrievePostsFromNetwork(tags, postsPerPage, pageNumber)
+        viewModelScope.launch {
+            repository.getPostsFromNetwork(tags, postsPerPage, pageNumber)
+            _postSuccess.value = true
+            if (posts.value.isNullOrEmpty()) {
+                _postSuccess.value = false
+            }
+        }
     }
 
     /**
@@ -44,36 +54,22 @@ class TagSearchViewModel : ViewModel() {
      */
     fun getMorePosts() {
         pageNumber++
-        retrievePostsFromNetwork(currentTags, postsPerPage, pageNumber)
-        Log.i("Test", "Additional posts retrieved")
-    }
-
-    /**
-     * Function that interacts with network to retrieve posts. Appends newly retrieved posts to existing (or empty) list of posts
-     */
-    private fun retrievePostsFromNetwork(tags: String, limit: Int, page: Int) {
         viewModelScope.launch {
-            _posts.value = _posts.value?.plus(
-                DanbooruApi.retrofitService.getPosts(tags, limit, page).toDisplayModel()
-            )
-            Log.i("Test", "Request made. ${_posts.value?.size} posts retrieved")
-            _postSuccess.value = true
-            if (_posts.value.isNullOrEmpty()) {
-                _postSuccess.value = false
-            }
+            repository.addPostsFromNetwork(currentTags, postsPerPage, pageNumber)
         }
     }
 
     /**
      * ViewModel factory for viewModel. Currently not in use
      */
-//    class viewModelFactory(val windowManager: WindowManager) : ViewModelProvider.Factory {
-//        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//            if (modelClass.isAssignableFrom(TagSearchViewModel::class.java)) {
-//                @Suppress("UNCHECKED_CAST")
-//                return TagSearchViewModel(windowManager) as T
-//            }
-//            throw IllegalArgumentException("Unable to construct viewmodel")
-//        }
-//    }
+    class viewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(TagSearchViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return TagSearchViewModel(application) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
+        }
+    }
+
 }

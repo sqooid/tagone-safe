@@ -25,15 +25,15 @@ data class DanbooruPostNet(
     @Json(name = "tag_string_artist") val tagStringArtist: String,
     @Json(name = "tag_string_meta") val tagStringMeta: String,
     @Json(name = "file_url") val fileUrl: String?,
-    @Json(name = "preview_file_url") val previewFileUrl: String?
+    @Json(name = "preview_file_url") val previewFileUrl: String?,
+    @Json(name = "image_width") val imageWidth: Int,
+    @Json(name = "image_height") val imageHeight: Int,
+    @Json(name = "file_ext") val fileExt: String?
 //    @Json(name = "large_file_url") val largeFileUrl: String,
 //    val md5: String,
 //    @Json(name = "last_comment_bumped_at") val lastCommentBumpedAt: String,
-//    @Json(name = "image_width") val imageWidth: Int,
-//    @Json(name = "image_height") val imageHeight: Int,
 //    @Json(name = "tag_string") val tagString: String,
 //    @Json(name = "is_note_locked") val isNoteLocked: Boolean,
-//    @Json(name = "file_ext") val fileExt: String,
 //    @Json(name = "last_noted_at") val lastNotedAt: String,
 //    @Json(name = "is_rating_locked") val isRatingLocked: Boolean,
 //    @Json(name = "has_children") val hasChildren: Boolean,
@@ -76,7 +76,10 @@ fun List<DanbooruPostNet>.toDisplayModel(): List<DisplayModel> {
             tagStringCharacter = it.tagStringCharacter,
             tagStringCopyright = it.tagStringCopyright,
             fileUrl = it.fileUrl,
-            previewFileUrl = it.previewFileUrl
+            previewFileUrl = it.previewFileUrl,
+            imageWidth = it.imageWidth,
+            imageHeight = it.imageHeight,
+            fileExt = it.fileExt
         )
     }
 }

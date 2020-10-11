@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.example.tagone.util.DisplayModel
 
 @Entity(tableName = "favourites_table")
-data class PostDatabaseFormat(
+data class FavouritesDatabaseFormat(
     @PrimaryKey
     val id: Int?,
     @ColumnInfo
@@ -30,9 +30,16 @@ data class PostDatabaseFormat(
     @ColumnInfo
     val dateFavourited: String = java.util.Calendar.getInstance().toString(),
     @ColumnInfo
-    val localFavourite: Boolean )
+    val localFavourite: Boolean,
+    @ColumnInfo
+    val imageWidth: Int,
+    @ColumnInfo
+    val imageHeight: Int,
+    @ColumnInfo
+    val fileExt: String?
+)
 
-fun List<PostDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
+fun List<FavouritesDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
             id = it.id,
@@ -45,7 +52,10 @@ fun List<PostDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
             tagStringCopyright = it.tagStringCopyright,
             fileUrl = it.fileUrl,
             previewFileUrl = it.previewFileUrl,
-            localFavourite = it.localFavourite
+            localFavourite = it.localFavourite,
+            imageHeight = it.imageHeight,
+            imageWidth = it.imageWidth,
+            fileExt = it.fileExt
         )
     }
 }

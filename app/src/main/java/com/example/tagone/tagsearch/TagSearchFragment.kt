@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.renderscript.ScriptGroup
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -14,11 +15,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.tagone.R
 import com.example.tagone.databinding.TagSearchFragmentBinding
+import com.example.tagone.util.PostScrollAdapter
 
 class TagSearchFragment : Fragment() {
 
@@ -29,6 +32,8 @@ class TagSearchFragment : Fragment() {
     private lateinit var viewModel: TagSearchViewModel
     private lateinit var binding: TagSearchFragmentBinding
     private lateinit var windowManager: WindowManager
+
+    val PREFERENCES_NAME = "preferences"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +48,8 @@ class TagSearchFragment : Fragment() {
         windowManager = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         // ViewModel bound
-        viewModel = ViewModelProvider(this).get(TagSearchViewModel::class.java)
+        val activity = requireNotNull(this.activity)
+        viewModel = ViewModelProvider(this, TagSearchViewModel.viewModelFactory(activity.application)).get(TagSearchViewModel::class.java)
         binding.viewModel = viewModel
 
         // Search field
@@ -154,23 +160,24 @@ class TagSearchFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
+        val columns = requireContext().getSharedPreferences(PREFERENCES_NAME, 0).getInt("scroll_columns", 2)
 
         /**
          * Instantiating adapter
          */
-        val adapter = TagSearchAdapter(width, TagSearchAdapter.OnClickListener { post, postNumber ->
-//            val extras = FragmentNavigatorExtras(
-//                imageView to post.id.toString()
-//            )
+        val adapter = PostScrollAdapter(columns, width, PostScrollAdapter.OnClickListener { post, postNumber ->
             this.findNavController()
                 .navigate(TagSearchFragmentDirections.tagSearchShowDetailed(post, postNumber))
+        }, PostScrollAdapter.OnClickListener { post, postNumber ->
+            this.findNavController()
+                .navigate(TagSearchFragmentDirections.actionTagSearchToDetailedVideoViewFragment(post, postNumber))
         })
         binding.tagSearchRecyclerView.adapter = adapter
 
         /**
          * Creating staggered grid layout manager
          */
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(columns, LinearLayoutManager.VERTICAL)
         staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         binding.tagSearchRecyclerView.layoutManager = staggeredGridLayoutManager
 

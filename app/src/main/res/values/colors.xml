@@ -8,6 +8,10 @@
     <color name="secondaryDarkColor">#0064b7</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
+    
+    <color name="colorPrimary">#424242</color>
+    <color name="colorPrimaryDark">#1b1b1b</color>
+    <color name="colorAccent">#64c1ff</color>
 
     <color name="faintTextColor">#666666</color>
     <color name="red">#FF0000</color>

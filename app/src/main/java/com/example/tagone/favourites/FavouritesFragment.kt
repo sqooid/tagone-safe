@@ -13,16 +13,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.tagone.R
 import com.example.tagone.databinding.FavouritesFragmentBinding
-import com.example.tagone.tagsearch.TagSearchAdapter
 import com.example.tagone.tagsearch.TagSearchFragmentDirections
+import com.example.tagone.util.PostScrollAdapter
 
 class FavouritesFragment : Fragment() {
 
     private lateinit var viewModel: FavouritesViewModel
     private lateinit var binding: FavouritesFragmentBinding
     private lateinit var windowManager: WindowManager
+
+    val PREFERENCES_NAME = "preferences"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +50,6 @@ class FavouritesFragment : Fragment() {
     }
 
 
-
-
-
     /**
      * Function to set up recycler view with staggered grid layout
      */
@@ -68,14 +66,23 @@ class FavouritesFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
+        val columns =
+            requireContext().getSharedPreferences(PREFERENCES_NAME, 0).getInt("scroll_columns", 2)
 
         /**
          * Instantiating adapter
          */
-        val adapter = TagSearchAdapter(width, TagSearchAdapter.OnClickListener { post, postNumber ->
-            this.findNavController()
-                .navigate(FavouritesFragmentDirections.favouritesShowDetailed(post, postNumber))
-        })
+        val adapter = PostScrollAdapter(
+            columns,
+            width,
+            PostScrollAdapter.OnClickListener { post, postNumber ->
+                this.findNavController()
+                    .navigate(FavouritesFragmentDirections.favouritesShowDetailed(post, postNumber))
+            },
+            PostScrollAdapter.OnClickListener { post, postNumber ->
+                this.findNavController()
+                    .navigate(TagSearchFragmentDirections.actionTagSearchToDetailedVideoViewFragment(post, postNumber))
+            })
         binding.favouritesRecyclerView.adapter = adapter
 
         /**

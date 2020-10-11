@@ -10,34 +10,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionInflater
 import com.example.tagone.R
-import com.example.tagone.databinding.DetailedViewFragmentBinding
+import com.example.tagone.databinding.DetailedVideoViewFragmentBinding
 import com.example.tagone.databinding.TagChipBinding
+import com.example.tagone.detailedvideoview.DetailedVideoViewFragmentArgs
+import com.example.tagone.detailedvideoview.DetailedVideoViewFragmentDirections
 import com.example.tagone.util.DisplayModel
 import com.google.android.flexbox.FlexboxLayout
 
-class DetailedViewFragment : Fragment() {
+class DetailedVideoViewFragment : Fragment() {
 
-    private lateinit var viewModel: DetailedViewViewModel
-    private lateinit var binding: DetailedViewFragmentBinding
+    private lateinit var viewModel: DetailedVideoViewViewModel
+    private lateinit var binding: DetailedVideoViewFragmentBinding
     private lateinit var windowManager: WindowManager
     private lateinit var post: DisplayModel
-
-    /**
-     * Attempted shared element animation stuff
-     */
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        postponeEnterTransition()
-//        sharedElementEnterTransition =
-//            TransitionInflater.from(context).inflateTransition(R.transition.change_transform_transition)
-//    }
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        startPostponedEnterTransition()
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,16 +32,15 @@ class DetailedViewFragment : Fragment() {
         /**
          * Getting args from navigation
          */
-        val args = DetailedViewFragmentArgs.fromBundle(requireArguments())
+        val args = DetailedVideoViewFragmentArgs.fromBundle(requireArguments())
         post = args.post
         val postNumber = args.postNumber // The position of the post in list being navigated from
 
         /**
          * Creating data binding
          */
-        binding = DetailedViewFragmentBinding.inflate(inflater)
+        binding = DetailedVideoViewFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
-        binding.detailedImageView.transitionName = post.id.toString()
 
         /**
          * Getting windowManager and setting imageView constraints
@@ -77,9 +62,9 @@ class DetailedViewFragment : Fragment() {
         val activity = requireNotNull(this.activity)
         viewModel = ViewModelProvider(
             this,
-            DetailedViewViewModel.ViewModelFactory(activity.application, post, postNumber)
+            DetailedVideoViewViewModel.ViewModelFactory(activity.application, post, postNumber)
         ).get(
-            DetailedViewViewModel::class.java
+            DetailedVideoViewViewModel::class.java
         )
 
         /**
@@ -104,7 +89,7 @@ class DetailedViewFragment : Fragment() {
         // Observer for tags being clicked to start search using tag in tag search fragment
         viewModel.linkedTag.observe(viewLifecycleOwner, Observer {
             it?.let {
-                this.findNavController().navigate(DetailedViewFragmentDirections.followTag(it))
+                this.findNavController().navigate(DetailedVideoViewFragmentDirections.actionDetailedVideoViewFragmentToTagSearch(it))
                 viewModel.doneSearchingLinkedTag()
             }
         })

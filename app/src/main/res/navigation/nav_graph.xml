@@ -28,6 +28,7 @@
             android:id="@+id/favourites_show_detailed"
             app:destination="@id/detailedViewFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/detailedViewFragment"
         android:name="com.example.tagone.detailedview.DetailedViewFragment"
@@ -43,5 +44,10 @@
             android:id="@+id/followTag"
             app:destination="@id/tag_search" />
     </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.example.tagone.SettingsFragment"
+        android:label="SettingsFragment" />
 
 </navigation>

@@ -8,7 +8,7 @@ import com.example.tagone.util.PostsRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DetailedViewViewModel(
+class DetailedVideoViewViewModel(
     application: Application,
     private val post: DisplayModel,
     private val postNumber: Int
@@ -41,9 +41,9 @@ class DetailedViewViewModel(
     }
 
     fun watchFavouriteStatus() {
-       if (post.id != null) {
-           isFavourited = repository.isFavourited(post.id)
-       }
+        if (post.id != null) {
+            isFavourited = repository.isFavourited(post.id)
+        }
     }
 
     fun toggleFavourite() {
@@ -65,9 +65,9 @@ class DetailedViewViewModel(
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(DetailedViewViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(DetailedVideoViewViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return DetailedViewViewModel(application, post, postNumber) as T
+                return DetailedVideoViewViewModel(application, post, postNumber) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
