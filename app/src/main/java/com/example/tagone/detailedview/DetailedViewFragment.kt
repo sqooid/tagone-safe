@@ -5,17 +5,20 @@ import android.content.res.ColorStateList
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.media.session.MediaControllerCompat
 import android.view.*
+import android.widget.MediaController
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.transition.TransitionInflater
 import com.example.tagone.R
 import com.example.tagone.databinding.DetailedViewFragmentBinding
 import com.example.tagone.databinding.TagChipBinding
 import com.example.tagone.util.DisplayModel
 import com.google.android.flexbox.FlexboxLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DetailedViewFragment : Fragment() {
 
@@ -55,7 +58,6 @@ class DetailedViewFragment : Fragment() {
          */
         binding = DetailedViewFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
-        binding.detailedImageView.transitionName = post.id.toString()
 
         /**
          * Getting windowManager and setting imageView constraints
@@ -69,7 +71,9 @@ class DetailedViewFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.height()
         }
-        binding.detailedImageView.layoutParams.height = height
+//        binding.detailedImageView.layoutParams.height = height
+//        binding.detailedVideoView.layoutParams.height = height
+        binding.frameLayout.layoutParams.height = height
 
         /**
          * Creating viewModel
@@ -109,12 +113,13 @@ class DetailedViewFragment : Fragment() {
             }
         })
         // Favourite state observer. For favourite button
+        val button = binding.favouriteButton
         viewModel.isFavourited.observe(viewLifecycleOwner, Observer {
             if (it) {
-                binding.favouriteButton.backgroundTintList =
+                button.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.likeButtonBackground))
             } else {
-                binding.favouriteButton.backgroundTintList =
+                button.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.elevation2))
             }
         })
@@ -122,6 +127,40 @@ class DetailedViewFragment : Fragment() {
         setHasOptionsMenu(true)
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /**
+         * Adding appropriate view (image or video)
+         */
+        when (post.fileExt) {
+            "mp4", "webm" -> initializeVideo()
+            else -> initializeImage()
+        }
+    }
+
+    /**
+     * Function run in the case that the media is an image or gif
+     */
+    private fun initializeImage() {
+        binding.detailedVideoView.visibility = View.GONE
+    }
+
+    /**
+     * Function run in the case that the media is a video
+     */
+    private fun initializeVideo() {
+        // Removing imageView
+        binding.detailedImageView.visibility = View.GONE
+        // Showing indeterminate progress bar while loading
+        val progressBar = binding.progressBar
+        progressBar.visibility = View.VISIBLE
+        val mediaController = MediaController(context, false)
+        val videoView = binding.detailedVideoView
+        viewModel.setVideoViewData(videoView, progressBar)
+        mediaController.setAnchorView(videoView)
+        videoView.setMediaController(mediaController)
     }
 
     private fun generateTags(post: DisplayModel, inflater: LayoutInflater) {

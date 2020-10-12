@@ -54,17 +54,17 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, dest, _ ->
             val toolBar = findViewById<Toolbar>(R.id.toolbar)
             val appBar = findViewById<AppBarLayout>(R.id.appbar_layout)
-            val toolBarParams = toolBar.layoutParams as AppBarLayout.LayoutParams
+//            val toolBarParams = toolBar.layoutParams as AppBarLayout.LayoutParams
             when (dest.id) {
                 R.id.detailedViewFragment -> {
-                    appBar.setExpanded(false, false)
-                    toolBarParams.scrollFlags =
-                        AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
-
+                    appBar.setExpanded(true, false)
+                    supportActionBar?.hide()
                 }
                 R.id.tag_search -> {
-                    toolBarParams.scrollFlags =
-                        AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                    supportActionBar?.show()
+                }
+                R.id.favourites -> {
+                    supportActionBar?.show()
                 }
             }
         }

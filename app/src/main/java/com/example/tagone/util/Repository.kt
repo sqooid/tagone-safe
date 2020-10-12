@@ -35,8 +35,8 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
         }
     }
 
-    fun isFavourited(id: Int): LiveData<Boolean> {
-        return postsDatabase.postsDao.isInFavourites(id)
+    fun isFavourited(fileUrl: String): LiveData<Boolean> {
+        return postsDatabase.postsDao.isInFavourites(fileUrl)
     }
 
     /**

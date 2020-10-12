@@ -16,24 +16,44 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/detailed_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="match_parent"
                     app:imageUrlWidthHeight="@{post.fileUrl}"
                     tools:src="@drawable/ic_baseline_smoke_free_24" />
+
+                <VideoView
+                    android:id="@+id/detailed_video_view"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@drawable/ic_baseline_smoke_free_24" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:animationResolution="25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:indeterminateBehavior="repeat" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/favourite_button"

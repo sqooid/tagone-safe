@@ -1,5 +1,6 @@
 package com.example.tagone.database
 
+import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,7 +9,7 @@ import com.example.tagone.util.DisplayModel
 @Entity(tableName = "favourites_table")
 data class FavouritesDatabaseFormat(
     @PrimaryKey
-    val id: Int?,
+    val fileUrl: String,
     @ColumnInfo
     val createdAt: String?,
     @ColumnInfo
@@ -24,7 +25,7 @@ data class FavouritesDatabaseFormat(
     @ColumnInfo
     val tagStringMeta: String,
     @ColumnInfo
-    val fileUrl: String?,
+    val id: Int?,
     @ColumnInfo
     val previewFileUrl: String?,
     @ColumnInfo

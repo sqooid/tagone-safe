@@ -105,12 +105,12 @@ dependencies {
     //Flexbox
     implementation 'com.google.android:flexbox:2.0.1'
 
-    // Video player Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.0'
-
     // File chooser library
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
 
     // Permissions
     implementation 'ru.superjob:kotlin-permissions:1.0.3'
+
+    // File downloader - PRDownloader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
 }

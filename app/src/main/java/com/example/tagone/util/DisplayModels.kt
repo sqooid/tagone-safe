@@ -7,6 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DisplayModel(
+    val fileUrl: String?,
     val id: Int?,
     val createdAt: String?,
     val source: String?,
@@ -16,7 +17,6 @@ data class DisplayModel(
     val tagStringCopyright: String,
     val tagStringArtist: String,
     val tagStringMeta: String,
-    val fileUrl: String?,
     val previewFileUrl: String?,
     val imageWidth: Int,
     val imageHeight: Int,
@@ -34,7 +34,7 @@ fun List<DisplayModel>.toFavouritesDatabaseFormat(): List<FavouritesDatabaseForm
             tagStringMeta = it.tagStringMeta,
             tagStringCharacter = it.tagStringCharacter,
             tagStringCopyright = it.tagStringCopyright,
-            fileUrl = it.fileUrl,
+            fileUrl = it.fileUrl ?: "",
             previewFileUrl = it.previewFileUrl,
             localFavourite = it.localFavourite,
             imageHeight = it.imageHeight,
@@ -54,7 +54,7 @@ fun DisplayModel.toFavouritesDatabaseFormat(): FavouritesDatabaseFormat {
         tagStringMeta = this.tagStringMeta,
         tagStringCharacter = this.tagStringCharacter,
         tagStringCopyright = this.tagStringCopyright,
-        fileUrl = this.fileUrl,
+        fileUrl = this.fileUrl  ?: "",
         previewFileUrl = this.previewFileUrl,
         localFavourite = this.localFavourite,
         imageWidth = this.imageWidth,

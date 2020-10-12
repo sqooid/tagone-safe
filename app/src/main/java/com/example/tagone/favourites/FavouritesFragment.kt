@@ -66,8 +66,9 @@ class FavouritesFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
-        val columns =
-            requireContext().getSharedPreferences(PREFERENCES_NAME, 0).getInt("scroll_columns", 2)
+        val preferences = requireContext().getSharedPreferences(PREFERENCES_NAME, 0)
+        val columns = preferences.getInt("scroll_columns_favourites", 2)
+        val lowResMode = preferences.getBoolean("use_preview_favourites", false)
 
         /**
          * Instantiating adapter
@@ -78,11 +79,7 @@ class FavouritesFragment : Fragment() {
             PostScrollAdapter.OnClickListener { post, postNumber ->
                 this.findNavController()
                     .navigate(FavouritesFragmentDirections.favouritesShowDetailed(post, postNumber))
-            },
-            PostScrollAdapter.OnClickListener { post, postNumber ->
-                this.findNavController()
-                    .navigate(TagSearchFragmentDirections.actionTagSearchToDetailedVideoViewFragment(post, postNumber))
-            })
+            }, lowResMode)
         binding.favouritesRecyclerView.adapter = adapter
 
         /**

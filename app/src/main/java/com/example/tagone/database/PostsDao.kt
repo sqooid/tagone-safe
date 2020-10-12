@@ -11,8 +11,8 @@ interface PostsDao {
     @Query("SELECT * FROM favourites_table ORDER BY dateFavourited")
     fun getByDate(): LiveData<List<FavouritesDatabaseFormat>>
 
-    @Query("SELECT EXISTS (SELECT 1 FROM favourites_table WHERE id = :id)")
-    fun isInFavourites(id: Int): LiveData<Boolean>
+    @Query("SELECT EXISTS (SELECT 1 FROM favourites_table WHERE fileUrl = :fileUrl)")
+    fun isInFavourites(fileUrl: String): LiveData<Boolean>
 
     @Insert
     fun addToFavourites(favourites: FavouritesDatabaseFormat)

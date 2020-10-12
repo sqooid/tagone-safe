@@ -160,7 +160,9 @@ class TagSearchFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
-        val columns = requireContext().getSharedPreferences(PREFERENCES_NAME, 0).getInt("scroll_columns", 2)
+        val preferences = requireContext().getSharedPreferences(PREFERENCES_NAME, 0)
+        val columns = preferences.getInt("scroll_columns_tag_search", 2)
+        val lowResMode = preferences.getBoolean("use_preview_tag_search", false)
 
         /**
          * Instantiating adapter
@@ -168,10 +170,7 @@ class TagSearchFragment : Fragment() {
         val adapter = PostScrollAdapter(columns, width, PostScrollAdapter.OnClickListener { post, postNumber ->
             this.findNavController()
                 .navigate(TagSearchFragmentDirections.tagSearchShowDetailed(post, postNumber))
-        }, PostScrollAdapter.OnClickListener { post, postNumber ->
-            this.findNavController()
-                .navigate(TagSearchFragmentDirections.actionTagSearchToDetailedVideoViewFragment(post, postNumber))
-        })
+        }, lowResMode)
         binding.tagSearchRecyclerView.adapter = adapter
 
         /**

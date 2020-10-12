@@ -9,6 +9,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class DanbooruPostNet(
+    @Json(name = "file_url") val fileUrl: String?,
     val id: Int?,
     val score: Int?,
     val source: String?,
@@ -24,7 +25,6 @@ data class DanbooruPostNet(
     @Json(name = "tag_string_copyright") val tagStringCopyright: String,
     @Json(name = "tag_string_artist") val tagStringArtist: String,
     @Json(name = "tag_string_meta") val tagStringMeta: String,
-    @Json(name = "file_url") val fileUrl: String?,
     @Json(name = "preview_file_url") val previewFileUrl: String?,
     @Json(name = "image_width") val imageWidth: Int,
     @Json(name = "image_height") val imageHeight: Int,

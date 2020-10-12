@@ -1,6 +1,11 @@
 package com.example.tagone.detailedview
 
 import android.app.Application
+import android.net.Uri
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.VideoView
+import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.tagone.database.getDatabase
 import com.example.tagone.util.DisplayModel
@@ -30,6 +35,11 @@ class DetailedViewViewModel(
     lateinit var isFavourited: LiveData<Boolean>
 
     /**
+     * General variables for use in UI
+     */
+
+
+    /**
      * Function called from fragment by on-click listener to link tag cards to tag search
      */
     fun searchLinkedTag(tag: String) {
@@ -41,8 +51,8 @@ class DetailedViewViewModel(
     }
 
     fun watchFavouriteStatus() {
-       if (post.id != null) {
-           isFavourited = repository.isFavourited(post.id)
+       if (post.fileUrl != null) {
+           isFavourited = repository.isFavourited(post.fileUrl)
        }
     }
 
@@ -51,6 +61,30 @@ class DetailedViewViewModel(
             removeFromFavourites(post)
         } else {
             addToFavourites(post)
+        }
+    }
+
+    fun getVideoUri(): Uri {
+        return if (post.fileUrl != null) {
+            post.fileUrl.toUri().buildUpon().scheme("https").build()
+        } else {
+            Uri.EMPTY
+        }
+
+    }
+
+    fun setVideoViewData(videoView: VideoView, progressBar: ProgressBar) {
+        with (videoView) {
+            setVideoURI(getVideoUri())
+            canPause()
+            canSeekBackward()
+            canSeekForward()
+            setOnPreparedListener {
+                it.setVolume(1F, 1F)
+                it.isLooping = true
+                progressBar.visibility = View.GONE
+            }
+            start()
         }
     }
 

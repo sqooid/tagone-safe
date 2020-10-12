@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tagone.R
 import com.example.tagone.databinding.ImagePreviewBinding
+import com.example.tagone.databinding.ImagePreviewLowresBinding
 import com.example.tagone.databinding.VideoPreviewBinding
 
 class PostScrollAdapter(
     private val columns: Int,
     private val screenWidth: Int,
     private val imageOnClickListener: OnClickListener,
-    private val videoOnClickListener: OnClickListener
+    private val lowRes: Boolean
 ) :
     ListAdapter<DisplayModel, RecyclerView.ViewHolder>(DiffUtilCallback) {
 
@@ -46,31 +47,23 @@ class PostScrollAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             STATIC_ITEM -> ImageViewHolder(ImagePreviewBinding.inflate(LayoutInflater.from(parent.context)))
-            else -> VideoViewHolder(VideoPreviewBinding.inflate(LayoutInflater.from(parent.context)))
+            else -> return VideoViewHolder(VideoPreviewBinding.inflate(LayoutInflater.from(parent.context)))
         }
     }
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val post = getItem(position)
-        when (holder) {
-            is ImageViewHolder -> {
-                holder.itemView.setOnClickListener {
-                    imageOnClickListener.onClick(post, position)
-                }
-                holder.bind(post, position)
-            }
-            is VideoViewHolder -> {
-                holder.itemView.setOnClickListener {
-                    videoOnClickListener.onClick(post, position)
-                }
-                holder.bind(post, position)
-                }
-            }
+        holder.itemView.setOnClickListener {
+            imageOnClickListener.onClick(post, position)
+        }
         if (position == itemCount - 5) {
             _postsExhausted.value = true
         }
-
+        when (holder) {
+            is ImageViewHolder -> holder.bind(post, position)
+            is VideoViewHolder -> holder.bind(post, position)
+        }
     }
 
     inner class VideoViewHolder(val binding: VideoPreviewBinding) :
@@ -94,6 +87,7 @@ class PostScrollAdapter(
 
         fun bind(item: DisplayModel, itemNumber: Int) {
             binding.post = item
+            binding.lowRes = lowRes
 //            binding.previewImageView.transitionName = item.id.toString()
             binding.postNumber = itemNumber + 1
             val width = screenWidth / columns

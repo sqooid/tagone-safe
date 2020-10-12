@@ -1,6 +1,7 @@
 package com.example.tagone.util
 
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -18,25 +19,9 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<DisplayModel>?) {
     adapter.submitList(data)
 }
 
-/**
- * Loading image from URL
- */
-@BindingAdapter("imageUrlWidth")
-fun displayImageWidthConstraint(imageView: ImageView, imageUrl: String?) {
-    imageUrl?.let {
-        val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
-        Glide.with(imageView.context)
-            .load(imageUri)
-            .placeholder(R.drawable.ic_baseline_image_24)
-            .thumbnail(0.2f)
-//            .dontAnimate()
-            .apply(RequestOptions().override(imageView.layoutParams.width, 0))
-            .into(imageView)
-    }
-}
 
 /**
- * Loading image from URL
+ * Loading images and gifs from URL
  */
 @BindingAdapter("imageUrlWidthHeight")
 fun displayImageWidthHeightConstraint(imageView: ImageView, imageUrl: String?) {
