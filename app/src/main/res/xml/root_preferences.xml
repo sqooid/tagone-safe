@@ -7,6 +7,7 @@
             android:id="@+id/storage"
             app:key="storage_location"
             app:summary=""
+            app:defaultValue="/storage/emulated/0/anitag"
             app:title="Choose download directory" />
 
     </PreferenceCategory>

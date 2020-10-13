@@ -32,6 +32,8 @@ class TagSearchViewModel(application: Application) : ViewModel() {
     private val postsPerPage = 100
     private var pageNumber = 1
 
+    val tagList = repository.tagList
+
 
     /**
      * Function that is run when user hits search button. Resets posts
@@ -56,6 +58,15 @@ class TagSearchViewModel(application: Application) : ViewModel() {
         pageNumber++
         viewModelScope.launch {
             repository.addPostsFromNetwork(currentTags, postsPerPage, pageNumber)
+        }
+    }
+
+    /**
+     * Calls function in repository to get or update list of suggested tags
+     */
+    fun updateTagSuggestions(tag: String) {
+        viewModelScope.launch {
+            repository.getTagsFromNetwork(tag)
         }
     }
 

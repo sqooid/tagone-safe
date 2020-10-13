@@ -2,7 +2,10 @@ package com.example.tagone.util
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import com.downloader.Error
+import com.downloader.OnDownloadListener
 
 fun focusKeyboard(context: Context, view: SearchView) {
 //    view.requestFocus()
@@ -10,4 +13,8 @@ fun focusKeyboard(context: Context, view: SearchView) {
         context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.showSoftInput(view, 0)
 
+}
+
+fun createFileName(fileUrl: String): String {
+    return "[^\\/]+$".toRegex().find(fileUrl)!!.value
 }

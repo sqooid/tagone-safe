@@ -15,12 +15,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.loader.app.LoaderManager
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.tagone.R
 import com.example.tagone.databinding.TagSearchFragmentBinding
+import com.example.tagone.util.Constants
 import com.example.tagone.util.PostScrollAdapter
 
 class TagSearchFragment : Fragment() {
@@ -32,8 +34,6 @@ class TagSearchFragment : Fragment() {
     private lateinit var viewModel: TagSearchViewModel
     private lateinit var binding: TagSearchFragmentBinding
     private lateinit var windowManager: WindowManager
-
-    val PREFERENCES_NAME = "preferences"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -160,7 +160,7 @@ class TagSearchFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
-        val preferences = requireContext().getSharedPreferences(PREFERENCES_NAME, 0)
+        val preferences = requireContext().getSharedPreferences(Constants.PREFERENCE_NAME, 0)
         val columns = preferences.getInt("scroll_columns_tag_search", 2)
         val lowResMode = preferences.getBoolean("use_preview_tag_search", false)
 

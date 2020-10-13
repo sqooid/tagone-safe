@@ -1,20 +1,24 @@
 package com.example.tagone
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.codekidlabs.storagechooser.StorageChooser
+import com.example.tagone.util.Constants
 import com.kotlinpermissions.KotlinPermissions
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
-    val PREFERENCES_NAME = "preferences"
+    private lateinit var preferences: SharedPreferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        preferences = requireActivity().getSharedPreferences("preferences", 0)
+
         val manager = preferenceManager
-        manager.sharedPreferencesName = PREFERENCES_NAME
+        manager.sharedPreferencesName = Constants.PREFERENCE_NAME
 
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
@@ -41,13 +45,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
                         .withMemoryBar(true)
                         .allowCustomPath(true)
                         .setType(StorageChooser.DIRECTORY_CHOOSER)
-                        .actionSave(true)
-                        .withPreference(context?.getSharedPreferences(PREFERENCES_NAME, 0))
                         .showHidden(true)
+                        .actionSave(true)
+                        .withPreference(preferences)
                         .build()
                     chooser.show()
                     chooser.setOnSelectListener {
-                        Log.i("test", "Path: $it")
+                        Log.i("test", "Got path: $it")
                         preference.summary = it
                     }
                 }

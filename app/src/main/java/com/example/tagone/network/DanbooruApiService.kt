@@ -25,23 +25,16 @@ interface DanbooruApiService {
         @Query("limit") limit: Int,
         @Query("page") page: Int
     ): List<DanbooruPostNet>
-}
 
-///**
-// * Test
-// */
-//private val retrofit = Retrofit.Builder()
-//    .addConverterFactory(ScalarsConverterFactory.create())
-//    .baseUrl(BASE_URL)
-//    .build()
-//
-//interface DanbooruApiService {
-//    @GET("/posts.json")
-//    suspend fun getPosts(
-//        @Query("tag_string") tags: String,
-//        @Query("limit") limit: Int,
-//        @Query("page") page: Int): String
-//}
+    @GET("/tags.json")
+    suspend fun getTags(
+        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("search[name_matches]") tag: String,
+        @Query("search[order]") order: String,
+        @Query("search[hide_empty]") excludeEmpty: Boolean
+    ): List<DanbooruTagNet>
+}
 
 object DanbooruApi {
     val retrofitService: DanbooruApiService by lazy {

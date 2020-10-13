@@ -5,6 +5,26 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
+ * Gelbooru models
+ */
+
+
+
+/**
+ * Danbooru models
+ */
+/**
+ * Network model for tags
+ */
+@JsonClass(generateAdapter = true)
+data class DanbooruTagNet(
+    val name: String,
+    @Json(name = "post_count") val postCount: Int,
+    val category: Int
+)
+
+
+/**
  * Data class for post from api. Includes all meta-data
  */
 @JsonClass(generateAdapter = true)
