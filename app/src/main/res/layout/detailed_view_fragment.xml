@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,6 +28,7 @@
 
             <FrameLayout
                 android:id="@+id/frame_layout"
+                android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -55,28 +56,43 @@
                     android:indeterminate="true"
                     android:indeterminateBehavior="repeat" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/favourite_button"
-                    android:onClick="@{() -> viewModel.toggleFavourite()}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/favourite_button_margin"
-                    android:layout_gravity="bottom|end"
-                    android:src="@drawable/ic_fire_white_24"
-                    app:rippleColor="@color/primaryLightColor"
-                    app:backgroundTint="@color/elevation2"
-                    app:tint="@android:color/white"
-                    app:borderWidth="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
             </FrameLayout>
+
+            <Button
+                android:layout_below="@id/frame_layout"
+                android:onClick="@{() -> viewModel.copySourceToClipboard()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_margin="@dimen/favourite_button_margin"
+                android:text="@string/source" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_below="@id/frame_layout"
+
+                android:id="@+id/favourite_button"
+                android:onClick="@{() -> viewModel.toggleFavourite()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/favourite_button_margin"
+                android:gravity="end"
+                android:src="@drawable/heart_outline"
+                app:rippleColor="@color/primaryLightColor"
+                app:backgroundTint="@color/elevation2"
+                app:tint="@android:color/white"
+                app:borderWidth="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <include
                 android:id="@+id/tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/favourite_button"
                 layout="@layout/detailed_information_fragment" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </androidx.core.widget.NestedScrollView>
 

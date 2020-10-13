@@ -34,6 +34,10 @@ class DetailedViewViewModel(
 
     lateinit var isFavourited: LiveData<Boolean>
 
+    private val _sourceClip = MutableLiveData<String>()
+    val sourceClip: LiveData<String>
+        get() = _sourceClip
+
     /**
      * General variables for use in UI
      */
@@ -50,6 +54,10 @@ class DetailedViewViewModel(
         _linkedTag.value = null
     }
 
+
+    /**
+     * Observes the current post's favourite status
+     */
     fun watchFavouriteStatus() {
        if (post.fileUrl != null) {
            isFavourited = repository.isFavourited(post.fileUrl)
@@ -64,15 +72,20 @@ class DetailedViewViewModel(
         }
     }
 
+    /**
+     * Creates Uri out of fileUrl if file is a video
+     */
     fun getVideoUri(): Uri {
         return if (post.fileUrl != null) {
             post.fileUrl.toUri().buildUpon().scheme("https").build()
         } else {
             Uri.EMPTY
         }
-
     }
 
+    /**
+     * Initiates videoView with data
+     */
     fun setVideoViewData(videoView: VideoView, progressBar: ProgressBar) {
         with (videoView) {
             setVideoURI(getVideoUri())
@@ -88,6 +101,12 @@ class DetailedViewViewModel(
         }
     }
 
+    /**
+     * Pastes file source in clipboard
+     */
+    fun copySourceToClipboard() {
+        _sourceClip.value =  post.source
+    }
 
     /**
      * ViewModel factory for this viewModel

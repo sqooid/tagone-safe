@@ -1,14 +1,15 @@
 package com.example.tagone.detailedview
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.media.session.MediaControllerCompat
 import android.view.*
 import android.widget.MediaController
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +19,6 @@ import com.example.tagone.databinding.DetailedViewFragmentBinding
 import com.example.tagone.databinding.TagChipBinding
 import com.example.tagone.util.DisplayModel
 import com.google.android.flexbox.FlexboxLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DetailedViewFragment : Fragment() {
 
@@ -121,6 +121,15 @@ class DetailedViewFragment : Fragment() {
             } else {
                 button.backgroundTintList =
                     ColorStateList.valueOf(resources.getColor(R.color.elevation2))
+            }
+        })
+        // Observer for copying post source to clipboard
+        viewModel.sourceClip.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Post source",it)
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this.context, "Source copied to clipboard", Toast.LENGTH_SHORT).show()
             }
         })
 
