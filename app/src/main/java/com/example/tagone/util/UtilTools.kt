@@ -16,5 +16,5 @@ fun focusKeyboard(context: Context, view: SearchView) {
 }
 
 fun createFileName(fileUrl: String): String {
-    return "[^\\/]+$".toRegex().find(fileUrl)!!.value
+    return "[^/]+$".toRegex().find(fileUrl)!!.value
 }

@@ -31,7 +31,6 @@ fun displayImageWidthHeightConstraint(imageView: ImageView, imageUrl: String?) {
             .load(imageUri)
             .placeholder(R.drawable.ic_baseline_image_24)
             .thumbnail(0.2f)
-//            .dontAnimate()
             .apply(
                 RequestOptions().override(
                     imageView.layoutParams.width,

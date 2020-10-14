@@ -7,7 +7,37 @@ import com.squareup.moshi.JsonClass
 /**
  * Gelbooru models
  */
+@JsonClass(generateAdapter = true)
+data class GelbooruPostNet(
+    val id: Int,
+    @Json(name = "created_at") val createdAt: String,
+    @Json(name = "file_url") val  fileUrl: String,
+    val height: Int,
+    val width: Int,
+    val tags: String,
+    val source: String
+)
 
+@JvmName("toDisplayModelGelbooruPostNet")
+fun List<GelbooruPostNet>.toDisplayModel(): List<DisplayModel> {
+    return map {
+        DisplayModel(
+            fileUrl = it.fileUrl,
+            id = it.id,
+            createdAt = it.createdAt,
+            source = it.source,
+            tagStringGeneral = it.tags,
+            tagStringArtist = "",
+            tagStringCharacter = "",
+            tagStringCopyright = "",
+            tagStringMeta = "",
+            previewFileUrl = it.fileUrl,
+            imageHeight = it.height,
+            imageWidth = it.width,
+            fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value
+        )
+    }
+}
 
 
 /**
@@ -22,7 +52,6 @@ data class DanbooruTagNet(
     @Json(name = "post_count") val postCount: Int,
     val category: Int
 )
-
 
 /**
  * Data class for post from api. Includes all meta-data
