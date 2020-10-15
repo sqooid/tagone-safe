@@ -21,7 +21,7 @@ private val retrofit = Retrofit.Builder()
 interface DanbooruApiService {
     @GET("/posts.json")
     suspend fun getPosts(
-        @Query("tags") tags: String,
+        @Query("tags", encoded = true) tags: String,
         @Query("limit") limit: Int,
         @Query("page") page: Int
     ): List<DanbooruPostNet>
@@ -37,7 +37,7 @@ interface DanbooruApiService {
 }
 
 object DanbooruApi {
-    val retrofitService: DanbooruApiService by lazy {
+    val danbooruService: DanbooruApiService by lazy {
         retrofit.create(DanbooruApiService::class.java)
     }
 }

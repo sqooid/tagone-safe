@@ -32,5 +32,6 @@
     <string name="channel_name">Anitag</string>
     <string name="channel_description">Notifications from Anitag</string>
     <string name="source">Source</string>
+    <string name="server">server</string>
 
 </resources>

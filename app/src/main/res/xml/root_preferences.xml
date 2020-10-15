@@ -10,6 +10,13 @@
             app:defaultValue="/storage/emulated/0/anitag"
             app:title="Choose download directory" />
 
+        <ListPreference
+            app:key="@string/server"
+            app:title="Server"
+            app:entries="@array/server_entries"
+            app:entryValues="@array/server_values"
+            app:defaultValue="danbooru" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Tag Search">

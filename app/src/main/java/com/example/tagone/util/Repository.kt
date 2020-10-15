@@ -2,22 +2,19 @@ package com.example.tagone.util
 
 import android.app.Application
 import android.util.Log
-import android.webkit.DownloadListener
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.codekidlabs.storagechooser.utils.DiskUtil
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.example.tagone.database.PostsDatabase
 import com.example.tagone.database.toDisplayModel
-import com.example.tagone.network.DanbooruApi
-import com.example.tagone.network.DanbooruTagNet
-import com.example.tagone.network.toDisplayModel
+import com.example.tagone.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.File
 
 class PostsRepository(private val postsDatabase: PostsDatabase) {
@@ -40,7 +37,7 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
      * Gets list of tags matching start of input
      */
     suspend fun getTagsFromNetwork(tag: String) {
-        _tagList.value = DanbooruApi.retrofitService.getTags(10, 1, "$tag*", "count", true)
+        _tagList.value = DanbooruApi.danbooruService.getTags(10, 1, "$tag*", "count", true)
     }
 
     /**
@@ -65,13 +62,34 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
     /**
      * Tag search network retrieval functions
      */
-    suspend fun getPostsFromNetwork(tags: String, limit: Int, page: Int) {
-        _searchList.value = DanbooruApi.retrofitService.getPosts(tags, limit, page).toDisplayModel()
+    var searchLimit = 100
+
+    suspend fun getPostsFromNetwork(server: Int, tags: String, page: Int) {
+        val encodedTags = tags.replace(" ", "+")
+        try {
+            when (server) {
+                0 -> _searchList.value =
+                    DanbooruApi.danbooruService.getPosts(encodedTags, searchLimit, page).danbooruToDisplayModel()
+                1 -> _searchList.value =
+                    GelbooruApi.gelbooruService.getPosts(encodedTags, searchLimit, page).postList.gelbooruToDisplayModel()
+            }
+        } catch (e: HttpException) {
+            Log.i("test","Post limit decreased")
+            searchLimit -= 20
+            getPostsFromNetwork(server, tags, page)
+        }
+
     }
 
-    suspend fun addPostsFromNetwork(tags: String, limit: Int, page: Int) {
+    suspend fun addPostsFromNetwork(server: Int, tags: String, page: Int) {
+        val encodedTags = tags.replace(" ", "+")
         _searchList.value = _searchList.value?.plus(
-            DanbooruApi.retrofitService.getPosts(tags, limit, page).toDisplayModel()
+            when (server) {
+                0 -> DanbooruApi.danbooruService.getPosts(encodedTags, searchLimit, page)
+                    .danbooruToDisplayModel()
+                else -> GelbooruApi.gelbooruService.getPosts(encodedTags, searchLimit, page)
+                    .postList.gelbooruToDisplayModel()
+            }
         )
     }
 
@@ -120,7 +138,7 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
         )
             .build()
             .start(DownloadListener())
-        Log.i("test","id: $id")
+        Log.i("test", "id: $id")
         return id
     }
 

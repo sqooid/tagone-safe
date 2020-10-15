@@ -1,12 +1,8 @@
 package com.example.tagone.tagsearch
 
 import android.app.Application
-import android.util.Log
-import android.view.WindowManager
 import androidx.lifecycle.*
 import com.example.tagone.database.getDatabase
-import com.example.tagone.network.DanbooruApi
-import com.example.tagone.network.toDisplayModel
 import com.example.tagone.util.DisplayModel
 import com.example.tagone.util.PostsRepository
 import kotlinx.coroutines.launch
@@ -29,7 +25,6 @@ class TagSearchViewModel(application: Application) : ViewModel() {
         get() = _searchParameters
 
     private var currentTags = ""
-    private val postsPerPage = 100
     private var pageNumber = 1
 
     val tagList = repository.tagList
@@ -38,14 +33,15 @@ class TagSearchViewModel(application: Application) : ViewModel() {
     /**
      * Function that is run when user hits search button. Resets posts
      */
-    fun doInitialSearchWithTags(tags: String) {
+    fun doInitialSearchWithTags(server: Int, tags: String) {
         _searchParameters.value = tags
         currentTags = tags
         pageNumber = 0
+        repository.searchLimit = 100
         viewModelScope.launch {
-            repository.getPostsFromNetwork(tags, postsPerPage, pageNumber)
+            repository.getPostsFromNetwork(server, tags, pageNumber)
             _postSuccess.value = true
-            if (posts.value.isNullOrEmpty()) {
+            if (posts.value != null && posts.value!!.isEmpty()) {
                 _postSuccess.value = false
             }
         }
@@ -54,10 +50,10 @@ class TagSearchViewModel(application: Application) : ViewModel() {
     /**
      * Function to call when the next page of posts is requestd
      */
-    fun getMorePosts() {
+    fun getMorePosts(server: Int) {
         pageNumber++
         viewModelScope.launch {
-            repository.addPostsFromNetwork(currentTags, postsPerPage, pageNumber)
+            repository.addPostsFromNetwork(server, currentTags, pageNumber)
         }
     }
 

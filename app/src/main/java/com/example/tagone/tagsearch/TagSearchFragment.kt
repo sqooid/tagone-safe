@@ -2,6 +2,7 @@ package com.example.tagone.tagsearch
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.example.tagone.R
 import com.example.tagone.databinding.TagSearchFragmentBinding
 import com.example.tagone.util.Constants
 import com.example.tagone.util.PostScrollAdapter
+import retrofit2.HttpException
 
 class TagSearchFragment : Fragment() {
 
@@ -34,6 +36,12 @@ class TagSearchFragment : Fragment() {
     private lateinit var viewModel: TagSearchViewModel
     private lateinit var binding: TagSearchFragmentBinding
     private lateinit var windowManager: WindowManager
+
+    // Getting preferences
+    private lateinit var preferences: SharedPreferences
+
+    // Keeping track of current source server
+    private  var server: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +64,8 @@ class TagSearchFragment : Fragment() {
         setHasOptionsMenu(true)
 
         // Calling function to set up recycler view
+        preferences = requireContext().getSharedPreferences(Constants.PREFERENCE_NAME, 0)
+
         bindRecyclerView()
 
         /**
@@ -69,6 +79,12 @@ class TagSearchFragment : Fragment() {
         viewModel.searchParameters.observe(viewLifecycleOwner, Observer {
             updateToolbarTitle(it)
         })
+        // Observer checking for request time out
+        viewModel.posts.observe(viewLifecycleOwner, Observer {
+            if (it == null) {
+                Toast.makeText(context, "Request timed out. Try decreasing post limit", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         return binding.root
     }
@@ -77,7 +93,8 @@ class TagSearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val args = TagSearchFragmentArgs.fromBundle(requireArguments())
         if (args.linkedTag != "") {
-            viewModel.doInitialSearchWithTags(args.linkedTag)
+            server = preferences.getString("server", "0")!!.toInt()
+            viewModel.doInitialSearchWithTags(server, args.linkedTag)
         }
     }
 
@@ -111,10 +128,14 @@ class TagSearchFragment : Fragment() {
              * Setting text change and submit listener
              */
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                /**
+                 * Text submit listener
+                 */
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     searchItem.collapseActionView()
                     if (query != null) {
-                        viewModel.doInitialSearchWithTags(query)
+                        server = preferences.getString("server", "0")!!.toInt()
+                        viewModel.doInitialSearchWithTags(server, query)
                         Log.i("Test", "Search made")
                     }
                     val inputMethodManager =
@@ -123,6 +144,9 @@ class TagSearchFragment : Fragment() {
                     return true
                 }
 
+                /**
+                 * Text change listener
+                 */
                 override fun onQueryTextChange(newText: String?): Boolean {
                     return false
                 }
@@ -160,7 +184,6 @@ class TagSearchFragment : Fragment() {
         } else {
             windowManager.currentWindowMetrics.bounds.width()
         }
-        val preferences = requireContext().getSharedPreferences(Constants.PREFERENCE_NAME, 0)
         val columns = preferences.getInt("scroll_columns_tag_search", 2)
         val lowResMode = preferences.getBoolean("use_preview_tag_search", false)
 
@@ -185,7 +208,7 @@ class TagSearchFragment : Fragment() {
          */
         adapter.postsExhausted.observe(viewLifecycleOwner, Observer {
             if (it) {
-                viewModel.getMorePosts()
+                viewModel.getMorePosts(server)
                 adapter.doneGettingPosts()
             }
         })

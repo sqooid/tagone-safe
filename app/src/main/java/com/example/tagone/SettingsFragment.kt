@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.codekidlabs.storagechooser.StorageChooser
@@ -22,8 +23,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
+        val storageLocation = findPreference<Preference>("storage_location")
+        storageLocation?.summary = preferences.getString("storage_location", "")
 
+        val server = findPreference<ListPreference>("server")
+        val serverValue = preferences.getString("server","")?.toInt()
+        server?.summary = if (serverValue == 0) {
+            "Danbooru"
+        } else {
+            "Gelbooru"
+        }
     }
+
+
 
     @SuppressLint("CommitPrefEdits")
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {

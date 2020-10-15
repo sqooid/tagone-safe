@@ -113,4 +113,10 @@ dependencies {
 
     // File downloader - PRDownloader
     implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    // XML parser TikXML
+    implementation 'com.tickaroo.tikxml:annotation:0.8.13'
+    implementation 'com.tickaroo.tikxml:core:0.8.13'
+    implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
+    kapt 'com.tickaroo.tikxml:processor:0.8.13'
 }

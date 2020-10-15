@@ -15,8 +15,10 @@ import com.example.tagone.R
  */
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<DisplayModel>?) {
-    val adapter = recyclerView.adapter as PostScrollAdapter
-    adapter.submitList(data)
+    data?.let {
+        val adapter = recyclerView.adapter as PostScrollAdapter
+        adapter.submitList(data)
+    }
 }
 
 

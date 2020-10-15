@@ -3,12 +3,13 @@ package com.example.tagone.network
 import com.example.tagone.util.DisplayModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.tickaroo.tikxml.annotation.*
 
 /**
  * Gelbooru models
  */
 @JsonClass(generateAdapter = true)
-data class GelbooruPostNet(
+data class GelbooruPostNetJson(
     val id: Int,
     @Json(name = "created_at") val createdAt: String,
     @Json(name = "file_url") val  fileUrl: String,
@@ -18,8 +19,7 @@ data class GelbooruPostNet(
     val source: String
 )
 
-@JvmName("toDisplayModelGelbooruPostNet")
-fun List<GelbooruPostNet>.toDisplayModel(): List<DisplayModel> {
+fun List<GelbooruPostNetJson>.gelbooruJsonToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
             fileUrl = it.fileUrl,
@@ -39,6 +39,63 @@ fun List<GelbooruPostNet>.toDisplayModel(): List<DisplayModel> {
     }
 }
 
+@Xml(name = "posts")
+class GelbooruWrapper {
+    @Attribute
+    var count: String = ""
+    @Attribute
+    var offset: String = ""
+
+    @Element
+    var postList: List<GelbooruPostNet> = mutableListOf()
+}
+
+@Xml(name = "post")
+data class GelbooruPostNet(
+    @Attribute val id: String,
+    @Attribute(name = "created_at") val createdAt: String,
+    @Attribute(name = "file_url") val  fileUrl: String,
+    @Attribute(name = "preview_url") val previewFileUrl: String,
+    @Attribute val height: String,
+    @Attribute val width: String,
+    @Attribute val tags: String,
+    @Attribute val source: String,
+    @Attribute val score: String,
+    @Attribute val parent_id: String,
+    @Attribute val sample_url: String,
+    @Attribute val sample_width: String,
+    @Attribute val sample_height: String,
+    @Attribute val rating: String,
+    @Attribute val change: String,
+    @Attribute val md5: String,
+    @Attribute val creator_id: String,
+    @Attribute val has_children: String,
+    @Attribute val status: String,
+    @Attribute val has_notes: String,
+    @Attribute val has_comments: String,
+    @Attribute val preview_width: String,
+    @Attribute val preview_height: String
+)
+
+fun List<GelbooruPostNet>.gelbooruToDisplayModel(): List<DisplayModel> {
+    return map {
+        DisplayModel(
+            fileUrl = it.fileUrl,
+            id = it.id.toInt(),
+            createdAt = it.createdAt,
+            source = it.source,
+            tagStringGeneral = it.tags,
+            tagStringArtist = "",
+            tagStringCharacter = "",
+            tagStringCopyright = "",
+            tagStringMeta = "",
+            previewFileUrl = it.previewFileUrl,
+            imageHeight = it.height.toInt(),
+            imageWidth = it.width.toInt(),
+            fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value
+        )
+    }
+}
 
 /**
  * Danbooru models
@@ -113,7 +170,7 @@ data class DanbooruPostNet(
 /**
  * Extension function for conversion of network model to display model of post
  */
-fun List<DanbooruPostNet>.toDisplayModel(): List<DisplayModel> {
+fun List<DanbooruPostNet>.danbooruToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
             id = it.id,

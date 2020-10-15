@@ -1,15 +1,40 @@
 package com.example.tagone.network
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://gelbooru.com"
 
+private val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+private val tikXml = TikXml.Builder()
+    .exceptionOnUnreadXml(false)
+    .build()
+
+private val retrofit = Retrofit.Builder()
+    .addConverterFactory(TikXmlConverterFactory.create(tikXml))
+    .baseUrl(BASE_URL)
+    .build()
+
 interface GelbooruApiService {
-    @GET("/index.php?page=dapi&s=post&q=index&json=1")
+    @GET("/index.php?page=dapi&s=post&q=index&json=0")
     suspend fun getPosts(
-        @Query("tags") tags: String,
-        @Query("pid") page: Int,
-        @Query("limit") limit: Int
-    )
+        @Query("tags", encoded = true) tags: String,
+        @Query("limit") limit: Int,
+        @Query("pid") page: Int
+    ): GelbooruWrapper
+}
+
+object GelbooruApi {
+    val gelbooruService: GelbooruApiService by lazy {
+        retrofit.create(GelbooruApiService::class.java)
+    }
 }
