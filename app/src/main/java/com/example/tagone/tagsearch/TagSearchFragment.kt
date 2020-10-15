@@ -122,11 +122,20 @@ class TagSearchFragment : Fragment() {
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = searchItem?.actionView as SearchView
 
+        var lastQuery = ""
+
         with(searchView) {
             setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
             /**
              * Setting text change and submit listener
              */
+
+            setOnSearchClickListener {
+                if (lastQuery != "") {
+                    searchView.setQuery(lastQuery, false)
+                }
+            }
+
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 /**
                  * Text submit listener
@@ -134,6 +143,7 @@ class TagSearchFragment : Fragment() {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     searchItem.collapseActionView()
                     if (query != null) {
+                        lastQuery = query
                         server = preferences.getString("server", "0")!!.toInt()
                         viewModel.doInitialSearchWithTags(server, query)
                         Log.i("Test", "Search made")
