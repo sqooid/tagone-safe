@@ -108,6 +108,10 @@ class DetailedViewViewModel(
         _sourceClip.value =  post.source
     }
 
+    fun doneCopyingSourceToClipboard() {
+        _sourceClip.value = null
+    }
+
     /**
      * ViewModel factory for this viewModel
      */

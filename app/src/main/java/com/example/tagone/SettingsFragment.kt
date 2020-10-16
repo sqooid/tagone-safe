@@ -2,12 +2,14 @@ package com.example.tagone
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.codekidlabs.storagechooser.StorageChooser
+import com.codekidlabs.storagechooser.utils.DiskUtil
 import com.example.tagone.util.Constants
 import com.kotlinpermissions.KotlinPermissions
 
@@ -17,24 +19,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferences = requireActivity().getSharedPreferences("preferences", 0)
+        preferences.registerOnSharedPreferenceChangeListener { _, _ ->
+            updateDisplay()
+        }
 
         val manager = preferenceManager
         manager.sharedPreferencesName = Constants.PREFERENCE_NAME
 
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-        val storageLocation = findPreference<Preference>("storage_location")
-        storageLocation?.summary = preferences.getString("storage_location", "")
-
-        val server = findPreference<ListPreference>("server")
-        val serverValue = preferences.getString("server","")?.toInt()
-        server?.summary = if (serverValue == 0) {
-            "Danbooru"
-        } else {
-            "Gelbooru"
-        }
+        updateDisplay()
     }
-
 
 
     @SuppressLint("CommitPrefEdits")
@@ -70,5 +65,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    private fun updateDisplay() {
+        val storageLocation = findPreference<Preference>("storage_location")
+        storageLocation?.summary = preferences.getString(DiskUtil.SC_PREFERENCE_KEY, "")
+
+        val server = findPreference<ListPreference>("server")
+        val serverValue = preferences.getString("server","")?.toInt()
+        server?.summary = if (serverValue == 0) {
+            "Danbooru"
+        } else {
+            "Gelbooru"
+        }
     }
 }

@@ -3,16 +3,23 @@ package com.example.tagone.tagsearch
 import android.app.SearchManager
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.renderscript.ScriptGroup
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +32,7 @@ import com.example.tagone.R
 import com.example.tagone.databinding.TagSearchFragmentBinding
 import com.example.tagone.util.Constants
 import com.example.tagone.util.PostScrollAdapter
+import org.w3c.dom.Text
 import retrofit2.HttpException
 
 class TagSearchFragment : Fragment() {
@@ -79,12 +87,6 @@ class TagSearchFragment : Fragment() {
         viewModel.searchParameters.observe(viewLifecycleOwner, Observer {
             updateToolbarTitle(it)
         })
-        // Observer checking for request time out
-        viewModel.posts.observe(viewLifecycleOwner, Observer {
-            if (it == null) {
-                Toast.makeText(context, "Request timed out. Try decreasing post limit", Toast.LENGTH_SHORT).show()
-            }
-        })
 
         return binding.root
     }
@@ -105,7 +107,10 @@ class TagSearchFragment : Fragment() {
     private fun updateToolbarTitle(text: String) {
         val toolBar = activity?.findViewById<Toolbar>(R.id.toolbar)
         toolBar?.title = text
+        lastQuery = text
     }
+
+    var lastQuery = ""
 
 
     /**
@@ -122,20 +127,22 @@ class TagSearchFragment : Fragment() {
         val searchManager = activity?.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchView = searchItem?.actionView as SearchView
 
-        var lastQuery = ""
 
         with(searchView) {
             setSearchableInfo(searchManager.getSearchableInfo(activity?.componentName))
-            /**
-             * Setting text change and submit listener
-             */
 
+            /**
+             * Putting previous query into search box
+             */
             setOnSearchClickListener {
                 if (lastQuery != "") {
                     searchView.setQuery(lastQuery, false)
                 }
             }
 
+            /**
+             * Setting text change and submit listener
+             */
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 /**
                  * Text submit listener
@@ -143,7 +150,6 @@ class TagSearchFragment : Fragment() {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     searchItem.collapseActionView()
                     if (query != null) {
-                        lastQuery = query
                         server = preferences.getString("server", "0")!!.toInt()
                         viewModel.doInitialSearchWithTags(server, query)
                         Log.i("Test", "Search made")
@@ -177,6 +183,30 @@ class TagSearchFragment : Fragment() {
         }
     }
 
+    /**
+     * Changing colour of server menu items to black
+     */
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        for (i in 1..2) {
+            val menuItem = menu.getItem(i)
+            val title = menuItem.title.toString()
+            val newTitle = SpannableString(title)
+            newTitle.setSpan(ForegroundColorSpan(Color.BLACK), 0, newTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            menuItem.title = newTitle
+        }
+    }
+
+    /**
+     * Click handlers for changing source server
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.danbooru_menu_option -> preferences.edit().putString("server", Constants.DANBOORU.toString()).apply()
+            R.id.gelbooru_server_option -> preferences.edit().putString("server", Constants.GELBOORU.toString()).apply()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     /**
      * Function to set up recycler view with staggered grid layout

@@ -41,7 +41,7 @@ class TagSearchViewModel(application: Application) : ViewModel() {
         viewModelScope.launch {
             repository.getPostsFromNetwork(server, tags, pageNumber)
             _postSuccess.value = true
-            if (posts.value != null && posts.value!!.isEmpty()) {
+            if (posts.value.isNullOrEmpty()) {
                 _postSuccess.value = false
             }
         }

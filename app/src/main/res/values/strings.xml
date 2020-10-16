@@ -33,5 +33,7 @@
     <string name="channel_description">Notifications from Anitag</string>
     <string name="source">Source</string>
     <string name="server">server</string>
+    <string name="danbooru">Danbooru</string>
+    <string name="gelbooru">Gelbooru</string>
 
 </resources>

@@ -123,13 +123,17 @@ class DetailedViewFragment : Fragment() {
                     ColorStateList.valueOf(resources.getColor(R.color.elevation2))
             }
         })
-        // Observer for copying post source to clipboard
+
+        /**
+         * Observer for copying post source to clipboard
+         */
         viewModel.sourceClip.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("Post source",it)
                 clipboard.setPrimaryClip(clip)
                 Toast.makeText(this.context, "Source copied to clipboard", Toast.LENGTH_SHORT).show()
+                viewModel.doneCopyingSourceToClipboard()
             }
         })
 

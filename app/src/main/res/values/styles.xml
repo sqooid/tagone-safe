@@ -10,15 +10,24 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="android:navigationBarColor">@color/backgroundColor</item>
         <item name="android:textColorSecondary">@color/faintTextColor</item>
-
         <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
     <style name="ActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:background">@color/elevation2</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="actionMenuTextColor">@color/secondaryTextColor</item>
+        <item name="android:actionMenuTextColor">@color/secondaryTextColor</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/AppbarPopupTheme</item>
+        <item name="android:textColorPrimary">@color/secondaryTextColor</item>
+        <item name="android:textColorSecondary">@color/faintTextColor</item>
+    </style>
+
+    <style name="AppbarPopupTheme" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="itemBackground">@color/primaryColor</item>
+        <item name="actionMenuTextColor">@color/secondaryTextColor</item>
+        <item name="android:actionMenuTextColor">@color/secondaryTextColor</item>
     </style>
 
 </resources>
