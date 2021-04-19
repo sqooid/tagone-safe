@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "com.example.tagone"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 1
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -106,7 +106,8 @@ dependencies {
     implementation 'com.google.android:flexbox:2.0.1'
 
     // File chooser library
-    implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
+//    implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
+    implementation 'com.github.noelchew:storage-chooser:2.0.4.4a'
 
     // Permissions
     implementation 'ru.superjob:kotlin-permissions:1.0.3'

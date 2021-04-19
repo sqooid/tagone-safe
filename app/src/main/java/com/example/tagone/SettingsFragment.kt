@@ -1,10 +1,14 @@
 package com.example.tagone
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -22,6 +26,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferences.registerOnSharedPreferenceChangeListener { _, _ ->
             updateDisplay()
         }
+
 
         val manager = preferenceManager
         manager.sharedPreferencesName = Constants.PREFERENCE_NAME
@@ -72,7 +77,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         storageLocation?.summary = preferences.getString(DiskUtil.SC_PREFERENCE_KEY, "")
 
         val server = findPreference<ListPreference>("server")
-        val serverValue = preferences.getString("server","")?.toInt()
+        val serverValue = preferences.getString("server", "")?.toInt()
         server?.summary = if (serverValue == 0) {
             "Danbooru"
         } else {

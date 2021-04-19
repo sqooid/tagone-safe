@@ -1,8 +1,11 @@
 package com.example.tagone.util
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.downloader.Error
 import com.downloader.OnDownloadListener

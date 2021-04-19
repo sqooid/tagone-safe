@@ -107,19 +107,17 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
         if (!directory.exists()) {
             directory.mkdirs()
         }
-        val fileList = directory.listFiles()!!
-        val files = if (fileList.isNotEmpty()) {
-            fileList.map { it.name }
-        } else {
-            listOf()
-        }
+
+        val files = directory.list()
+        files.forEach { Log.i("test", it) }
 
         // Iterating through list of posts in favourites list
         if (!favouritesList.value.isNullOrEmpty()) {
             for (post in favouritesList.value!!) {
                 val fileName = createFileName(post.fileUrl!!)
                 if (fileName !in files) {
-                    Log.i("test", "Download initiated: $fileName")
+                    Log.i("test", fileName)
+                    Log.i("test", "Download initiated: ${post.fileUrl}")
                     downloadFile(post.fileUrl, directoryString, fileName)
                     remainingItemsInDownload++
                 }
@@ -150,6 +148,7 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
         }
 
         override fun onError(error: Error?) {
+            Log.i("test", error.toString())
             return
         }
     }
