@@ -7,9 +7,13 @@ import android.content.res.ColorStateList
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.transition.TransitionInflater
+import android.util.Log
 import android.view.*
 import android.widget.MediaController
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,30 +38,33 @@ class DetailedViewFragment : Fragment() {
 //        super.onCreate(savedInstanceState)
 //        postponeEnterTransition()
 //        sharedElementEnterTransition =
-//            TransitionInflater.from(context).inflateTransition(R.transition.change_transform_transition)
+//            TransitionInflater.from(context)
+//                .inflateTransition(R.transition.change_transform_transition)
 //    }
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        startPostponedEnterTransition()
-//    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         /**
+         * Creating data binding
+         */
+        binding = DetailedViewFragmentBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+
+        /**
+         * Setting transitions
+         */
+        val transitionInflater = TransitionInflater.from(requireContext())
+        enterTransition = transitionInflater.inflateTransition(R.transition.slide_right_transition).addTarget(binding.detailedImageView)
+
+        /**
          * Getting args from navigation
          */
         val args = DetailedViewFragmentArgs.fromBundle(requireArguments())
         post = args.post
         val postNumber = args.postNumber // The position of the post in list being navigated from
-
-        /**
-         * Creating data binding
-         */
-        binding = DetailedViewFragmentBinding.inflate(inflater)
-        binding.lifecycleOwner = this
 
         /**
          * Getting windowManager and setting imageView constraints
@@ -129,11 +136,23 @@ class DetailedViewFragment : Fragment() {
          */
         viewModel.sourceClip.observe(viewLifecycleOwner, Observer {
             it?.let {
-                val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Post source",it)
+                val clipboard =
+                    requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Post source", it)
                 clipboard.setPrimaryClip(clip)
-                Toast.makeText(this.context, "Source copied to clipboard", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, "Source copied to clipboard", Toast.LENGTH_SHORT)
+                    .show()
                 viewModel.doneCopyingSourceToClipboard()
+            }
+        })
+
+        /**
+         * Observer for back navigation
+         */
+        viewModel.navigateBack.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                this.findNavController().navigateUp()
+                viewModel.doneNavigatingBack()
             }
         })
 
@@ -151,7 +170,10 @@ class DetailedViewFragment : Fragment() {
             "mp4", "webm" -> initializeVideo()
             else -> initializeImage()
         }
+
     }
+
+
 
     /**
      * Function run in the case that the media is an image or gif

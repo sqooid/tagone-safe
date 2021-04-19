@@ -2,6 +2,7 @@ package com.example.tagone.detailedview
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.VideoView
@@ -38,6 +39,10 @@ class DetailedViewViewModel(
     val sourceClip: LiveData<String>
         get() = _sourceClip
 
+    private val _navigateBack = MutableLiveData<Boolean>()
+    val navigateBack: LiveData<Boolean>
+        get() = _navigateBack
+
     /**
      * General variables for use in UI
      */
@@ -70,6 +75,17 @@ class DetailedViewViewModel(
         } else {
             addToFavourites(post)
         }
+    }
+
+    /**
+     * Navigate back from back button on top right
+     */
+    fun navigateBack() {
+        _navigateBack.value = true
+    }
+
+    fun doneNavigatingBack() {
+        _navigateBack.value = null
     }
 
     /**

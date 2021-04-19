@@ -77,7 +77,6 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
                     setContentTitle("Done")
                     setContentText("Download complete")
                     setProgress(0, 0, false)
-                    setSound(alarmSound)
                     setOnlyAlertOnce(true)
                 }
                 notify(Constants.NOTIFICATION_ID, builder.build())

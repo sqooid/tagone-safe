@@ -6,9 +6,13 @@ import android.content.Context
 import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MotionEventCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI.navigateUp
@@ -87,9 +91,12 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.hide()
                 }
                 R.id.tag_search -> {
+                    appBar.setExpanded(true, true)
                     supportActionBar?.show()
+
                 }
                 R.id.favourites -> {
+                    appBar.setExpanded(true, true)
                     supportActionBar?.show()
                 }
             }

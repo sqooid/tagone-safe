@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.TransitionInflater
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +31,12 @@ class FavouritesFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FavouritesFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
+
+        /**
+         * Setting transitions
+         */
+        val transitionInflater = TransitionInflater.from(requireContext())
+        exitTransition = transitionInflater.inflateTransition(R.transition.fade_transition).addTarget(binding.favouritesRecyclerView)
 
         /**
          * ViewModel

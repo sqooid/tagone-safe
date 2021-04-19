@@ -11,6 +11,7 @@ import android.renderscript.ScriptGroup
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -55,6 +56,12 @@ class TagSearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        /**
+         * Setting transitions
+         */
+        val transitionInflater = TransitionInflater.from(requireContext())
+        exitTransition = transitionInflater.inflateTransition(R.transition.fade_transition)
+        enterTransition = transitionInflater.inflateTransition(R.transition.fade_transition)
 
         // Data Binding
         binding = TagSearchFragmentBinding.inflate(inflater)
@@ -99,7 +106,6 @@ class TagSearchFragment : Fragment() {
             viewModel.doInitialSearchWithTags(server, args.linkedTag)
         }
     }
-
 
     /**
      * Helper functions
