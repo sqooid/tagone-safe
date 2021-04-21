@@ -20,13 +20,22 @@ data class GelbooruPostNetJson(
     val source: String
 )
 
+@Xml(name = "singlePost")
+class GelbooruSingleWrapper {
+    @Attribute
+    var count: String = ""
+    @Attribute
+    var offset: String = ""
+    @Element
+    var post: GelbooruPostNet? = null
+}
+
 @Xml(name = "posts")
 class GelbooruWrapper {
     @Attribute
     var count: String = ""
     @Attribute
     var offset: String = ""
-
     @Element
     var postList: List<GelbooruPostNet> = mutableListOf()
 }
@@ -58,6 +67,33 @@ data class GelbooruPostNet(
     @Attribute val preview_height: String
 )
 
+/**
+ * Single post conversion function
+ */
+fun GelbooruPostNet.gelbooruToDisplayModel(): DisplayModel {
+    return DisplayModel(
+        domain = Constants.GELBOORU,
+        fileUrl = this.fileUrl,
+        id = this.id.toInt(),
+        createdAt = this.createdAt,
+        source = this.source,
+        tagStringGeneral = this.tags,
+        tagStringArtist = "",
+        tagStringCharacter = "",
+        tagStringCopyright = "",
+        tagStringMeta = "",
+        previewFileUrl = this.previewFileUrl,
+        imageHeight = this.height.toInt(),
+        imageWidth = this.width.toInt(),
+        fileExt = "[^.]+$".toRegex().find(this.fileUrl)!!.value,
+        sampleFileUrl = this.sample_url,
+        dateFavourited = "",
+    )
+}
+
+/**
+ * List function to convert net data to display model
+ */
 fun List<GelbooruPostNet>.gelbooruToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
@@ -76,6 +112,7 @@ fun List<GelbooruPostNet>.gelbooruToDisplayModel(): List<DisplayModel> {
             imageWidth = it.width.toInt(),
             fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value,
             sampleFileUrl = it.sample_url,
+            dateFavourited = "",
         )
     }
 }
@@ -153,25 +190,52 @@ data class DanbooruPostNet(
 /**
  * Extension function for conversion of network model to display model of post
  */
+fun DanbooruPostNet.danbooruToDisplayModel(): DisplayModel {
+    return DisplayModel(
+        domain = Constants.DANBOORU,
+        id = this.id ?: -1,
+        createdAt = this.createdAt ?: "",
+        source = this.source ?: "",
+        tagStringGeneral = this.tagStringGeneral,
+        tagStringArtist = this.tagStringArtist,
+        tagStringMeta = this.tagStringMeta,
+        tagStringCharacter = this.tagStringCharacter,
+        tagStringCopyright = this.tagStringCopyright,
+        fileUrl = this.fileUrl ?: "",
+        previewFileUrl = this.previewFileUrl ?: "",
+        imageWidth = this.imageWidth,
+        imageHeight = this.imageHeight,
+        fileExt = this.fileExt ?: "",
+        sampleFileUrl = this.sampleFileUrl ?: "",
+        dateFavourited = "",
+    )
+}
+
+/**
+ * Extension function for conversion of network model to display model of post
+ */
 fun List<DanbooruPostNet>.danbooruToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
             domain = Constants.DANBOORU,
-            id = it.id,
-            createdAt = it.createdAt,
-            source = it.source,
+            id = it.id ?: -1,
+            createdAt = it.createdAt ?: "",
+            source = it.source ?: "",
             tagStringGeneral = it.tagStringGeneral,
             tagStringArtist = it.tagStringArtist,
             tagStringMeta = it.tagStringMeta,
             tagStringCharacter = it.tagStringCharacter,
             tagStringCopyright = it.tagStringCopyright,
-            fileUrl = it.fileUrl,
-            previewFileUrl = it.previewFileUrl,
+            fileUrl = it.fileUrl ?: "",
+            previewFileUrl = it.previewFileUrl ?: "",
             imageWidth = it.imageWidth,
             imageHeight = it.imageHeight,
-            fileExt = it.fileExt,
-            sampleFileUrl = it.sampleFileUrl,
+            fileExt = it.fileExt ?: "",
+            sampleFileUrl = it.sampleFileUrl ?: "",
+            dateFavourited = "",
         )
+    }.filter {
+        it.id != -1
     }
 }
 

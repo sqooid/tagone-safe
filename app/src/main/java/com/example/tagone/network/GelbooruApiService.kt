@@ -31,6 +31,11 @@ interface GelbooruApiService {
         @Query("limit") limit: Int,
         @Query("pid") page: Int
     ): GelbooruWrapper
+
+    @GET("/index.php?page=dapi&s=post&q=index&json=0")
+    suspend fun getSinglePost(
+        @Query("id") id: Int
+    ): GelbooruSingleWrapper
 }
 
 object GelbooruApi {

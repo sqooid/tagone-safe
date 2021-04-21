@@ -148,7 +148,7 @@ class DetailedViewViewModel(
 
     private fun addToFavourites(post: DisplayModel) {
         viewModelScope.launch {
-            repository.addToFavourites(post)
+            repository.addToFavourites(post, java.util.Calendar.getInstance().toString())
         }
     }
 

@@ -33,6 +33,10 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
     val tagList: LiveData<List<DanbooruTagNet>>
         get() = _tagList
 
+    private val _singlePost = MutableLiveData<DisplayModel>()
+    val singlePost: LiveData<DisplayModel>
+        get() = _singlePost
+
     /**
      * Gets list of tags matching start of input
      */
@@ -43,15 +47,15 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
     /**
      * Favourites database manipulation
      */
-    suspend fun addToFavourites(post: DisplayModel) {
+    suspend fun addToFavourites(post: DisplayModel, date: String) {
         withContext(Dispatchers.IO) {
-            postsDatabase.postsDao.addToFavourites(post.toFavouritesDatabaseFormat())
+            postsDatabase.postsDao.addToFavourites(post.toFavouritesDatabaseFormat(date))
         }
     }
 
     suspend fun removeFromFavourites(post: DisplayModel) {
         withContext(Dispatchers.IO) {
-            postsDatabase.postsDao.removeFromFavourites(post.toFavouritesDatabaseFormat())
+            postsDatabase.postsDao.removeFromFavourites(post.toFavouritesDatabaseFormat(post.dateFavourited))
         }
     }
 
@@ -91,6 +95,19 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
                     .postList.gelbooruToDisplayModel()
             }
         )
+    }
+
+    suspend fun getSinglePostFromNetwork(post: DisplayModel) {
+        val server = post.domain
+        val id = post.id
+        _singlePost.value = when (server) {
+            Constants.DANBOORU -> DanbooruApi.danbooruService.getSinglePost(id).danbooruToDisplayModel()
+            else -> GelbooruApi.gelbooruService.getSinglePost(id).post?.gelbooruToDisplayModel()
+        }
+    }
+
+    fun clearSinglePost() {
+        _singlePost.value = null
     }
 
     /**
@@ -149,6 +166,7 @@ class PostsRepository(private val postsDatabase: PostsDatabase) {
 
         override fun onError(error: Error?) {
             Log.i("test", error.toString())
+            remainingItemsInDownload--
             return
         }
     }

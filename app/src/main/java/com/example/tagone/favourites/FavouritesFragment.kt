@@ -8,6 +8,7 @@ import android.transition.Fade
 import android.transition.TransitionInflater
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.example.tagone.databinding.FavouritesFragmentBinding
 import com.example.tagone.tagsearch.TagSearchFragmentDirections
 import com.example.tagone.util.Constants
 import com.example.tagone.util.PostScrollAdapter
+import com.kotlinpermissions.KotlinPermissions
 
 class FavouritesFragment : Fragment() {
 
@@ -52,6 +54,26 @@ class FavouritesFragment : Fragment() {
         bindRecyclerView()
 
         setHasOptionsMenu(true)
+
+        /**
+         * Observers
+         */
+        viewModel.targetPost.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                viewModel.refreshInDatabase(viewModel.existingTargetPost, it)
+                this.findNavController()
+                    .navigate(FavouritesFragmentDirections.favouritesShowDetailed(it, 1))
+                viewModel.doneNavigatingToTarget()
+            }
+        })
+
+
+        KotlinPermissions.with(activity)
+            .permissions(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            .ask()
 
         return binding.root
     }
@@ -101,9 +123,8 @@ class FavouritesFragment : Fragment() {
             columns,
             width,
             PostScrollAdapter.OnClickListener { post, postNumber ->
-                this.findNavController()
-                    .navigate(FavouritesFragmentDirections.favouritesShowDetailed(post, postNumber))
-            }, lowResMode)
+                viewModel.getTargetPost(post)
+                                              }, lowResMode)
         binding.favouritesRecyclerView.adapter = adapter
 
         /**

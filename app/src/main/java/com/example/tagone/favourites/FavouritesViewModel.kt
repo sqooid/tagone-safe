@@ -7,6 +7,7 @@ import android.media.RingtoneManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,7 @@ import com.downloader.PRDownloaderConfig
 import com.example.tagone.R
 import com.example.tagone.database.PostsDao
 import com.example.tagone.database.getDatabase
+import com.example.tagone.detailedview.DetailedViewViewModel
 import com.example.tagone.util.Constants
 import com.example.tagone.util.DisplayModel
 import com.example.tagone.util.PostsRepository
@@ -29,6 +31,9 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
     val posts = repository.favouritesList
     private val preferences: SharedPreferences = application.getSharedPreferences(Constants.PREFERENCE_NAME, 0)
     var downloadInProgress = false
+
+    val targetPost = repository.singlePost
+    lateinit var existingTargetPost: DisplayModel
 
     /**
      * Downloads all posts in user's favourites
@@ -64,7 +69,7 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
 
         var currentProgress = 0
         NotificationManagerCompat.from(context).apply {
-            builder.setProgress(totalItems, currentProgress, false)
+            builder.setProgress(totalItems, currentProgress, false).setSound(null)
             notify(Constants.NOTIFICATION_ID, builder.build())
             viewModelScope.launch {
                 while (repository.remainingItemsInDownload > 0) {
@@ -79,7 +84,6 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
                     setContentTitle("Done")
                     setContentText("Download complete")
                     setProgress(0, 0, false)
-                    setOnlyAlertOnce(true)
                 }
                 notify(Constants.NOTIFICATION_ID, builder.build())
             }
@@ -87,11 +91,31 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
     }
 
     /**
-     * Refreshs post info from network
+     * Gets post info from network
      */
-//    fun refreshPost(post: DisplayModel) : DisplayModel {
-//        repository.removeFromFavourites(post)
-//    }
+    fun getTargetPost(post: DisplayModel) {
+        existingTargetPost = post
+        viewModelScope.launch {
+            repository.getSinglePostFromNetwork(post)
+        }
+    }
+
+    /**
+     * Refreshes post data  in database
+     */
+    fun refreshInDatabase(oldPost: DisplayModel, newPost: DisplayModel) {
+        viewModelScope.launch {
+            repository.removeFromFavourites(oldPost)
+            repository.addToFavourites(newPost, oldPost.dateFavourited)
+        }
+    }
+
+    /**
+     * Navigation done thing
+     */
+    fun doneNavigatingToTarget() {
+        repository.clearSinglePost()
+    }
 
 
     /**

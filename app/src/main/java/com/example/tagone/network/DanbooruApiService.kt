@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://danbooru.donmai.us"
@@ -34,6 +35,11 @@ interface DanbooruApiService {
         @Query("search[order]") order: String,
         @Query("search[hide_empty]") excludeEmpty: Boolean
     ): List<DanbooruTagNet>
+
+    @GET("/posts/{id}.json")
+    suspend fun getSinglePost(
+        @Path("id") id: Int
+    ): DanbooruPostNet
 }
 
 object DanbooruApi {

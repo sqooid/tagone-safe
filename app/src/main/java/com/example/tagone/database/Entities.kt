@@ -6,6 +6,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.tagone.util.DisplayModel
 
+// java.util.Calendar.getInstance().toString()
+
 @Entity(tableName = "favourites_table")
 data class FavouritesDatabaseFormat(
     @PrimaryKey
@@ -15,9 +17,9 @@ data class FavouritesDatabaseFormat(
     @ColumnInfo
     val domain: Int,
     @ColumnInfo
-    val createdAt: String?,
+    val createdAt: String,
     @ColumnInfo
-    val source: String?,
+    val source: String,
     @ColumnInfo
     val tagStringGeneral: String,
     @ColumnInfo
@@ -29,17 +31,17 @@ data class FavouritesDatabaseFormat(
     @ColumnInfo
     val tagStringMeta: String,
     @ColumnInfo
-    val id: Int?,
+    val id: Int,
     @ColumnInfo
-    val previewFileUrl: String?,
+    val previewFileUrl: String,
     @ColumnInfo
-    val dateFavourited: String = java.util.Calendar.getInstance().toString(),
+    val dateFavourited: String,
     @ColumnInfo
     val imageWidth: Int,
     @ColumnInfo
     val imageHeight: Int,
     @ColumnInfo
-    val fileExt: String?
+    val fileExt: String,
 )
 
 fun List<FavouritesDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
@@ -60,6 +62,7 @@ fun List<FavouritesDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
             fileExt = it.fileExt,
             sampleFileUrl = it.sampleFileUrl,
             domain = it.domain,
+            dateFavourited = it.dateFavourited,
         )
     }
 }
