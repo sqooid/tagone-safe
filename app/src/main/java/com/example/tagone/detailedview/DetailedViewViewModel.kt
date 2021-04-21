@@ -121,7 +121,12 @@ class DetailedViewViewModel(
      * Pastes file source in clipboard
      */
     fun copySourceToClipboard() {
-        _sourceClip.value =  post.source
+        if ("i.pximg.net".toRegex().containsMatchIn(post.source)) {
+            _sourceClip.value = "https://www.pixiv.net/en/artworks/" + "[0-9]+(?=_)".toRegex().find(post.source)?.value
+            // + "#big_" + "(?<=_p)[0-9]+".toRegex().find(post.source)?.value ------------> for straight link to single image
+        } else {
+            _sourceClip.value =  post.source
+        }
     }
 
     fun doneCopyingSourceToClipboard() {
