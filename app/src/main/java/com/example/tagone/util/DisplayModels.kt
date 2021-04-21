@@ -7,20 +7,21 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class DisplayModel(
+    val domain: Int,
     val fileUrl: String?,
     val id: Int?,
     val createdAt: String?,
     val source: String?,
-    var localFavourite: Boolean = false,
     val tagStringGeneral: String,
     val tagStringCharacter: String,
     val tagStringCopyright: String,
     val tagStringArtist: String,
     val tagStringMeta: String,
     val previewFileUrl: String?,
+    val sampleFileUrl: String?,
     val imageWidth: Int,
     val imageHeight: Int,
-    val fileExt: String?
+    val fileExt: String?,
 ) : Parcelable
 
 fun List<DisplayModel>.toFavouritesDatabaseFormat(): List<FavouritesDatabaseFormat> {
@@ -36,16 +37,19 @@ fun List<DisplayModel>.toFavouritesDatabaseFormat(): List<FavouritesDatabaseForm
             tagStringCopyright = it.tagStringCopyright,
             fileUrl = it.fileUrl ?: "",
             previewFileUrl = it.previewFileUrl,
-            localFavourite = it.localFavourite,
             imageHeight = it.imageHeight,
             imageWidth = it.imageWidth,
-            fileExt = it.fileExt
+            fileExt = it.fileExt,
+            sampleFileUrl = it.sampleFileUrl ?: "",
+            domain = it.domain,
         )
     }
 }
 
 fun DisplayModel.toFavouritesDatabaseFormat(): FavouritesDatabaseFormat {
     return FavouritesDatabaseFormat(
+        domain = this.domain,
+        sampleFileUrl = this.sampleFileUrl ?: "",
         id = this.id,
         createdAt = this.createdAt,
         source = this.source,
@@ -56,7 +60,6 @@ fun DisplayModel.toFavouritesDatabaseFormat(): FavouritesDatabaseFormat {
         tagStringCopyright = this.tagStringCopyright,
         fileUrl = this.fileUrl  ?: "",
         previewFileUrl = this.previewFileUrl,
-        localFavourite = this.localFavourite,
         imageWidth = this.imageWidth,
         imageHeight = this.imageHeight,
         fileExt = this.fileExt

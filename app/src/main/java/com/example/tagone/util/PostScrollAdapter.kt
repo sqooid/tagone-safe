@@ -1,5 +1,6 @@
 package com.example.tagone.util
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -59,6 +60,7 @@ class PostScrollAdapter(
         }
         if (position == itemCount - 5) {
             _postsExhausted.value = true
+            Log.i("test", "Posts exhausted")
         }
         when (holder) {
             is ImageViewHolder -> holder.bind(post, position)

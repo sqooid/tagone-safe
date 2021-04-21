@@ -1,5 +1,6 @@
 package com.example.tagone.network
 
+import com.example.tagone.util.Constants
 import com.example.tagone.util.DisplayModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -18,26 +19,6 @@ data class GelbooruPostNetJson(
     val tags: String,
     val source: String
 )
-
-fun List<GelbooruPostNetJson>.gelbooruJsonToDisplayModel(): List<DisplayModel> {
-    return map {
-        DisplayModel(
-            fileUrl = it.fileUrl,
-            id = it.id,
-            createdAt = it.createdAt,
-            source = it.source,
-            tagStringGeneral = it.tags,
-            tagStringArtist = "",
-            tagStringCharacter = "",
-            tagStringCopyright = "",
-            tagStringMeta = "",
-            previewFileUrl = it.fileUrl,
-            imageHeight = it.height,
-            imageWidth = it.width,
-            fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value
-        )
-    }
-}
 
 @Xml(name = "posts")
 class GelbooruWrapper {
@@ -80,6 +61,7 @@ data class GelbooruPostNet(
 fun List<GelbooruPostNet>.gelbooruToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
+            domain = Constants.GELBOORU,
             fileUrl = it.fileUrl,
             id = it.id.toInt(),
             createdAt = it.createdAt,
@@ -92,7 +74,8 @@ fun List<GelbooruPostNet>.gelbooruToDisplayModel(): List<DisplayModel> {
             previewFileUrl = it.previewFileUrl,
             imageHeight = it.height.toInt(),
             imageWidth = it.width.toInt(),
-            fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value
+            fileExt = "[^.]+$".toRegex().find(it.fileUrl)!!.value,
+            sampleFileUrl = it.sample_url,
         )
     }
 }
@@ -134,8 +117,8 @@ data class DanbooruPostNet(
     @Json(name = "preview_file_url") val previewFileUrl: String?,
     @Json(name = "image_width") val imageWidth: Int,
     @Json(name = "image_height") val imageHeight: Int,
-    @Json(name = "file_ext") val fileExt: String?
-//    @Json(name = "large_file_url") val largeFileUrl: String,
+    @Json(name = "file_ext") val fileExt: String?,
+    @Json(name = "large_file_url") val sampleFileUrl: String?,
 //    val md5: String,
 //    @Json(name = "last_comment_bumped_at") val lastCommentBumpedAt: String,
 //    @Json(name = "tag_string") val tagString: String,
@@ -173,6 +156,7 @@ data class DanbooruPostNet(
 fun List<DanbooruPostNet>.danbooruToDisplayModel(): List<DisplayModel> {
     return map {
         DisplayModel(
+            domain = Constants.DANBOORU,
             id = it.id,
             createdAt = it.createdAt,
             source = it.source,
@@ -185,7 +169,8 @@ fun List<DanbooruPostNet>.danbooruToDisplayModel(): List<DisplayModel> {
             previewFileUrl = it.previewFileUrl,
             imageWidth = it.imageWidth,
             imageHeight = it.imageHeight,
-            fileExt = it.fileExt
+            fileExt = it.fileExt,
+            sampleFileUrl = it.sampleFileUrl,
         )
     }
 }

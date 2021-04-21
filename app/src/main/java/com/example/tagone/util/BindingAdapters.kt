@@ -44,6 +44,21 @@ fun displayImageWidthHeightConstraint(imageView: ImageView, imageUrl: String?) {
 }
 
 /**
+ * Loading images and gifs from URL in original res
+ */
+@BindingAdapter("imageUrlFullRes")
+fun displayImageFullRes(imageView: ImageView, imageUrl: String?) {
+    imageUrl?.let {
+        val imageUri = imageUrl.toUri().buildUpon().scheme("https").build()
+        Glide.with(imageView.context)
+            .load(imageUri)
+            .placeholder(R.drawable.ic_baseline_image_24)
+            .thumbnail(0.2f)
+            .into(imageView)
+    }
+}
+
+/**
  * Random binding adapter for basic textView
  */
 @BindingAdapter("loadedText")

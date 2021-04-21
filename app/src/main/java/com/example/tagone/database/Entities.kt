@@ -11,6 +11,10 @@ data class FavouritesDatabaseFormat(
     @PrimaryKey
     val fileUrl: String,
     @ColumnInfo
+    val sampleFileUrl: String,
+    @ColumnInfo
+    val domain: Int,
+    @ColumnInfo
     val createdAt: String?,
     @ColumnInfo
     val source: String?,
@@ -30,8 +34,6 @@ data class FavouritesDatabaseFormat(
     val previewFileUrl: String?,
     @ColumnInfo
     val dateFavourited: String = java.util.Calendar.getInstance().toString(),
-    @ColumnInfo
-    val localFavourite: Boolean,
     @ColumnInfo
     val imageWidth: Int,
     @ColumnInfo
@@ -53,10 +55,11 @@ fun List<FavouritesDatabaseFormat>.toDisplayModel(): List<DisplayModel> {
             tagStringCopyright = it.tagStringCopyright,
             fileUrl = it.fileUrl,
             previewFileUrl = it.previewFileUrl,
-            localFavourite = it.localFavourite,
             imageHeight = it.imageHeight,
             imageWidth = it.imageWidth,
-            fileExt = it.fileExt
+            fileExt = it.fileExt,
+            sampleFileUrl = it.sampleFileUrl,
+            domain = it.domain,
         )
     }
 }

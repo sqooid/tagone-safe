@@ -14,8 +14,10 @@ import com.codekidlabs.storagechooser.utils.DiskUtil
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.example.tagone.R
+import com.example.tagone.database.PostsDao
 import com.example.tagone.database.getDatabase
 import com.example.tagone.util.Constants
+import com.example.tagone.util.DisplayModel
 import com.example.tagone.util.PostsRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,6 +85,13 @@ class FavouritesViewModel(private val application: Application) : ViewModel() {
             }
         }
     }
+
+    /**
+     * Refreshs post info from network
+     */
+//    fun refreshPost(post: DisplayModel) : DisplayModel {
+//        repository.removeFromFavourites(post)
+//    }
 
 
     /**
