@@ -36,6 +36,18 @@ android {
         }
     }
 
+    flavorDimensions "version"
+    productFlavors {
+        water {
+            applicationIdSuffix ".water"
+            versionNameSuffix "-water"
+        }
+        full {
+            applicationIdSuffix ".full"
+            versionNameSuffix "-full"
+        }
+    }
+
     buildFeatures {
         dataBinding true
     }
