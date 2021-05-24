@@ -9,11 +9,4 @@
         app:actionLayout="@layout/tag_search_searchview"
         app:showAsAction="collapseActionView|ifRoom" />
 
-    <item
-        android:id="@+id/danbooru_menu_option"
-        android:title="@string/danbooru" />
-    <item
-        android:id="@+id/gelbooru_server_option"
-        android:title="@string/gelbooru" />
-
 </menu>

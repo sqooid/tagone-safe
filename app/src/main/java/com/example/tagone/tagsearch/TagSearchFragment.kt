@@ -50,7 +50,7 @@ class TagSearchFragment : Fragment() {
     private lateinit var preferences: SharedPreferences
 
     // Keeping track of current source server
-    private  var server: Int = 0
+    private  var server: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -187,31 +187,6 @@ class TagSearchFragment : Fragment() {
                 }
             }
         }
-    }
-
-    /**
-     * Changing colour of server menu items to black
-     */
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        for (i in 1..2) {
-            val menuItem = menu.getItem(i)
-            val title = menuItem.title.toString()
-            val newTitle = SpannableString(title)
-            newTitle.setSpan(ForegroundColorSpan(Color.BLACK), 0, newTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            menuItem.title = newTitle
-        }
-    }
-
-    /**
-     * Click handlers for changing source server
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.danbooru_menu_option -> preferences.edit().putString("server", Constants.DANBOORU.toString()).apply()
-            R.id.gelbooru_server_option -> preferences.edit().putString("server", Constants.GELBOORU.toString()).apply()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     /**

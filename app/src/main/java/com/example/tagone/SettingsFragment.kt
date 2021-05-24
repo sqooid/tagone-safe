@@ -75,13 +75,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun updateDisplay() {
         val storageLocation = findPreference<Preference>("storage_location")
         storageLocation?.summary = preferences.getString(DiskUtil.SC_PREFERENCE_KEY, "")
-
-        val server = findPreference<ListPreference>("server")
-        val serverValue = preferences.getString("server", "")?.toInt()
-        server?.summary = if (serverValue == 0) {
-            "Danbooru"
-        } else {
-            "Gelbooru"
-        }
     }
 }

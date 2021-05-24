@@ -9,7 +9,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private const val BASE_URL = "https://gelbooru.com"
+private const val BASE_URL = "https://safebooru.org"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
